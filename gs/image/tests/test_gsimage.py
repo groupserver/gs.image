@@ -30,18 +30,18 @@ def test_gsimage():
       >>> import md5
       >>> import os
       >>> import Products.Five
-      >>> import Products.GSImage
+      >>> import gs.image
       >>> from OFS.Image import Image
-      >>> from Products.GSImage import image
-      >>> from Products.GSImage.interfaces import IGSImage
+      >>> from gs.image import image
+      >>> from gs.image.interfaces import IGSImage
       
       >>> from Products.Five import zcml
 
       >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_config('permissions.zcml', Products.Five)
-      >>> zcml.load_config('configure.zcml', Products.GSImage)
+      >>> zcml.load_config('configure.zcml', gs.image)
 
-      >>> _prefix = os.path.dirname(Products.GSImage.tests.__file__)
+      >>> _prefix = os.path.dirname(gs.image.tests.__file__)
 
       >>> image = Image('whirlpool.jpg', 'whirlpool.jpg',
       ...                  file(os.path.join(_prefix, 'whirlpool.jpg')))
