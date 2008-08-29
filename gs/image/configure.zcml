@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:five="http://namespaces.zope.org/five">
+  
+  <!-- declare a marker interface on the Image class to allow us 
+    to add marker Interfaces, views and adaptation -->
+  <five:implements class="OFS.Image.Image"
+    interface=".interfaces.IImage" />
+    
+  <adapter provides=".interfaces.IGSImage"
+                for=".interfaces.IImage"
+                permission="zope2.Public"
+                factory=".image.GSImage"
+                />
+                
+  <!--View of the images -->
+  <class class=".view.GSImageTraversal">
+    <implements interface="zope.publisher.interfaces.IPublishTraverse"/>
+  </class>
+  <browser:page 
+    for="Products.XWFMailingListManager.interfaces.IGSMessagesFolder" 
+    name="image"
+    class=".view.GSImageTraversal"
+    permission="zope2.View" />
+
+  <class class=".view.GSImageView">
+    <implements interface=".interfaces.IGSImageView"/>
+  </class>
+  <browser:page 
+    for="Products.XWFMailingListManager.interfaces.IGSMessagesFolder" 
+    name="gsimage"
+    class=".view.GSImageView"
+    template="browser/templates/view_image.pt" 
+    permission="zope2.Public" />
+
+</configure>
