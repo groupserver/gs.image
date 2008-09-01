@@ -53,13 +53,13 @@ class GSImageView(BrowserView):
         self.__imageMetadata = None
         self.__authorInfo = None
         
-        self.width = self.height = 500
+        self.maxWidth = self.maxHeight = 432 # 24u on OGN
 
     @property
     def scaledImageURI(self):
         # http://wibble.com/groups/bar/files/f/abc123/resize/500/500/foo.jpg
         retval = '%s/files/f/%s/resize/%s/%s/%s' % \
-          (self.groupInfo.url, self.imageId, self.width, self.height, 
+          (self.groupInfo.url, self.imageId, self.maxWidth, self.maxHeight, 
            self.filename)
         assert self.imageId in retval
         return retval

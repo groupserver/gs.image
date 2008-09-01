@@ -15,8 +15,6 @@
     </title>
   </head>
   <body>
-    <tal:block metal:fill-slot="contextnavigation">
-    </tal:block>
     <div metal:fill-slot="body" class="image">
       <h1><code tal:content="view/filename">filename</code>
         by
@@ -34,11 +32,11 @@
           t view/imageMetadata/mime_type;">
         <div tal:define="user view/authorInfo/user"
           tal:replace="structure provider:groupserver.UserImage" />
-        <div id="from">From:
+        <div id="from"><strong>From:</strong>
           <a href="#" class="fn"
             tal:attributes="href view/authorInfo/url"
             tal:content="view/authorInfo/name">An Author</a></div>
-        <div id="to">To:
+        <div id="to"><strong>To:</strong>
           <a href="#" class="topic"
             tal:attributes="href string:/r/topic/${view/topic/last_post_id}"
             tal:content="view/topic/subject">A Topic</a>
@@ -48,42 +46,41 @@
             tal:content="view/groupInfo/name">A Group</a>
         </div>
         <div id="date">
-          Date:
+          <strong>Date:</strong>
           <span class="date"
             tal:content="python:munge_date(view.context, view.post['date'])">A Date</span>
         </div>
         <div id="filename">
-          Name:
+          <strong>Name:</strong>
           <code class="fileName" 
             tal:define="icon python:t.replace('/','-').replace('.','-').strip()"
             tal:attributes="class string:fileName ${icon};"
             tal:content="view/filename">file.name</code>
         </div>
         <div id="type">
-          Type:
+          <strong>Type:</strong>
           <span tal:content="t">mime/type</span>
         </div>
+        <div id="alternate-sizes">
+          <h3>Alternate Sizes</h3>
+          <p>
+            <a href="#"
+              tal:attributes="href view/fullImageURI">Full sized image:</a>
+            <span tal:content="view/fullImage/width">width</span> by
+            <span tal:content="view/fullImage/height">height</span> pixels
+            (<span class="size"
+              tal:define="s view/imageMetadata/file_size"
+              tal:content="python:u'%1.2fKB' % (s/1024.0)"/>)
+          </p>
+        </div><!--alternate-sizes-->
       </div><!--metadata-->
       
-      <div id="alternate-sizes">
-        <h3>Alternate Sizes</h3>
-        <p>
-          <a href="#"
-            tal:attributes="href view/fullImageURI">Full sized image:</a>
-          <span tal:content="view/fullImage/width">width</span> by
-          <span tal:content="view/fullImage/height">height</span> pixels
-          (<span class="size"
-            tal:define="s view/imageMetadata/file_size"
-            tal:content="python:u'%1.2fKB' % (s/1024.0)"/>)
-        </p>
-      </div><!--alternate-sizes-->
-
-      <img width="1" height="1" src="#" class="scaledImage"
-        tal:attributes="width view/width; 
-          height view/height; 
-          src view/scaledImageURI"/>
-      <p tal:content="view/scaledImageURI">ID</p>
-      <p tal:content="view/fullImageURI"/>
+      <img src="#" class="scaledImage"
+        tal:attributes="src view/scaledImageURI"/>
+        
+      <label for="linkurl">Link to this image</label>
+      <input readonly="0" type="text" id="linkurl"
+        tal:attributes="value string:${view/siteInfo/url}/r/img/${view/imageId}"/>
     </div>
   </body>
 </html>

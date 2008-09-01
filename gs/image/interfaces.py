@@ -8,11 +8,11 @@ class IImage(Interface):
 class IGSImageView(Interface):
     width = Int(title=u'Width',
         description=u'The width of the image',
-        default=500)
+        default=432)
 
     height = Int(title=u'Height',
         description=u'The height of the image',
-        default=500)
+        default=432)
 
 class IGSImage(Interface):
     def resize(x, y, maintain_aspect=True): #@NoSelf
