@@ -6,6 +6,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import implements
 
 from interfaces import *
+from queries import FileQuery
 
 import logging
 log = logging.getLogger('GSImageView')
@@ -37,7 +38,6 @@ class GSImageView(BrowserView):
         self.groupInfo = createObject('groupserver.GroupInfo', context)
 
         self.imageId = context.imageId
-        print 'Image ID %s' % self.imageId
         
         assert hasattr(self.groupInfo.groupObj, 'files'), \
           'No "files" in %s (%s)' % (self.groupInfo.name, self.groupInfo.id)
@@ -48,6 +48,9 @@ class GSImageView(BrowserView):
         self.image = files[0].getObject()
         assert self.image
 
+        self.__imageMetadata = None
+        self.__authorInfo = None
+        
         self.width = self.height = 500
 
     @property
@@ -61,9 +64,42 @@ class GSImageView(BrowserView):
 
     @property
     def filename(self):
+        # Inspried by the get_file method of the virtual file library.
         title  =  self.image.getProperty('title', '')
-        print title
         retval =  self.image.getProperty('filename', title).strip()
-        print 'filename %s' % retval
+        return retval
+
+    @property
+    def topic(self):
+        retval = self.imageMetadata['topic']
+        assert type(retval) == dict
+        assert retval
+        return retval
+
+    @property
+    def post(self):
+        retval = self.imageMetadata['post']
+        assert type(retval) == dict
+        assert retval
+        return retval
+        
+    @property
+    def authorInfo(self):
+        if self.__authorInfo == None:
+            authorId = self.post['author_id']
+            self.__authorInfo = createObject('groupserver.UserFromId', 
+                                             self.context, authorId)
+        retval = self.__authorInfo
+        return retval
+        
+    @property
+    def imageMetadata(self):
+        if self.__imageMetadata == None:
+            da = self.context.zsqlalchemy 
+            assert da, 'No data-adaptor found'
+            fileQuery = FileQuery(self.context, da)
+            self.__imageMetadata = fileQuery.file_metadata(self.imageId)
+            print self.__imageMetadata
+        retval = self.__imageMetadata
         return retval
 

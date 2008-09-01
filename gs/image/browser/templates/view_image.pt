@@ -6,14 +6,66 @@
   xmlns:metal="http://xml.zope.org/namespaces/metal"
   metal:use-macro="context/@@groupserver_layout/page">
   <head>
-    <title metal:fill-slot="title">Image, Innit.</title>
+    <title metal:fill-slot="title">
+      <span tal:replace="view/filename"/> by
+      <span tal:replace="view/authorInfo/name"/>:
+      <span tal:replace="view/topic/subject"/>:
+      <span tal:replace="view/groupInfo/name"/>:
+      <span tal:replace="view/siteInfo/name"/>
+    </title>
   </head>
   <body>
     <tal:block metal:fill-slot="contextnavigation">
     </tal:block>
     <div metal:fill-slot="body" class="image">
-      <h1>Image, Innit</h1>
-      <img width="1" height="1" src="#"
+      <h1><code tal:content="view/filename">filename</code>
+        by
+        <span tal:content="view/authorInfo/name">An Author</span></h1>
+      
+      <p>
+        <a href="#" class="postLink"
+          tal:attributes="href string:/r/post/${view/post/post_id}">Post in
+          <span class="topic" 
+            tal:content="view/topic/subject">A Topic</span></a>
+      </p>
+      
+      <div class="metadata"
+        tal:define="munge_date python:modules['Products.XWFCore.XWFUtils'].munge_date;
+          t view/imageMetadata/mime_type;">
+        <div tal:define="user view/authorInfo/user"
+          tal:replace="structure provider:groupserver.UserImage" />
+        <div id="from">From:
+          <a href="#" class="fn"
+            tal:attributes="href view/authorInfo/url"
+            tal:content="view/authorInfo/name">An Author</a></div>
+        <div id="to">To:
+          <a href="#" class="topic"
+            tal:attributes="href string:/r/topic/${view/topic/last_post_id}"
+            tal:content="view/topic/subject">A Topic</a>
+          &#8212;
+          <a href="#" class="group"
+            tal:attributes="href view/groupInfo/url"
+            tal:content="view/groupInfo/name">A Group</a>
+        </div>
+        <div id="date">
+          Date:
+          <span class="date"
+            tal:content="python:munge_date(view.context, view.post['date'])">A Date</span>
+        </div>
+        <div id="filename">
+          Name:
+          <code class="fileName" 
+            tal:define="icon python:t.replace('/','-').replace('.','-').strip()"
+            tal:attributes="class string:fileName ${icon};"
+            tal:content="view/filename">file.name</code>
+        </div>
+        <div id="type">
+          Type:
+          <span tal:content="t">mime/type</span>
+        </div>
+      </div>
+
+      <img width="1" height="1" src="#" class="scaledImage"
         tal:attributes="width view/width; 
           height view/height; 
           src view/scaledImageURI"/>
