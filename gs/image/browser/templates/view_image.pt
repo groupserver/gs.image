@@ -63,13 +63,27 @@
           Type:
           <span tal:content="t">mime/type</span>
         </div>
-      </div>
+      </div><!--metadata-->
+      
+      <div id="alternate-sizes">
+        <h3>Alternate Sizes</h3>
+        <p>
+          <a href="#"
+            tal:attributes="href view/fullImageURI">Full sized image:</a>
+          <span tal:content="view/fullImage/width">width</span> by
+          <span tal:content="view/fullImage/height">height</span> pixels
+          (<span class="size"
+            tal:define="s view/imageMetadata/file_size"
+            tal:content="python:u'%1.2fKB' % (s/1024.0)"/>)
+        </p>
+      </div><!--alternate-sizes-->
 
       <img width="1" height="1" src="#" class="scaledImage"
         tal:attributes="width view/width; 
           height view/height; 
           src view/scaledImageURI"/>
       <p tal:content="view/scaledImageURI">ID</p>
+      <p tal:content="view/fullImageURI"/>
     </div>
   </body>
 </html>

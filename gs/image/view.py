@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from Products.Five import BrowserView
+from OFS.Image import Image
 from zope.component import createObject, getMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import implements
@@ -45,9 +46,10 @@ class GSImageView(BrowserView):
         files = fileLibrary.find_files({'id': self.imageId})
         assert len(files) == 1, \
           'Wrong number of files returned: %s' % len(files)
-        self.image = files[0].getObject()
-        assert self.image
-
+        self.file = files[0].getObject()
+        assert self.file
+        self.fullImage = Image(self.imageId, self.imageId, self.file.data)
+        
         self.__imageMetadata = None
         self.__authorInfo = None
         
@@ -60,13 +62,21 @@ class GSImageView(BrowserView):
           (self.groupInfo.url, self.imageId, self.width, self.height, 
            self.filename)
         assert self.imageId in retval
+        return retval
+    
+    @property
+    def fullImageURI(self):
+        # http://wibble.com/groups/bar/files/f/abc123/foo.jpg
+        retval = '%s/files/f/%s/resize/%s' % \
+          (self.groupInfo.url, self.imageId, self.filename)
+        assert self.imageId in retval
         return retval        
 
     @property
     def filename(self):
         # Inspried by the get_file method of the virtual file library.
-        title  =  self.image.getProperty('title', '')
-        retval =  self.image.getProperty('filename', title).strip()
+        title  =  self.file.getProperty('title', '')
+        retval =  self.file.getProperty('filename', title).strip()
         return retval
 
     @property
@@ -99,7 +109,6 @@ class GSImageView(BrowserView):
             assert da, 'No data-adaptor found'
             fileQuery = FileQuery(self.context, da)
             self.__imageMetadata = fileQuery.file_metadata(self.imageId)
-            print self.__imageMetadata
         retval = self.__imageMetadata
         return retval
 
