@@ -73,7 +73,7 @@ class GSImageView(BrowserView):
     def get_uri_for_scaled(self, imageId, maxWidth, maxHeight, filename):
         retval = '%s/files/f/%s/resize/%s/%s/%s' % \
           (self.groupInfo.url, imageId, maxWidth, maxHeight, filename)
-        assert type(retval) == str
+        # assert type(retval) == str
         assert retval
         return retval
     
