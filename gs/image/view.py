@@ -80,7 +80,7 @@ class GSImageView(BrowserView):
     @property
     def fullImageURI(self):
         # http://wibble.com/groups/bar/files/f/abc123/foo.jpg
-        retval = '%s/files/f/%s/resize/%s' % \
+        retval = '%s/files/f/%s/%s' % \
           (self.groupInfo.url, self.imageId, self.filename)
         assert self.imageId in retval
         return retval
@@ -133,7 +133,7 @@ class GSImageView(BrowserView):
                 iid = f['file_id']
                 fn = f['file_name']
                 f['icon_uri'] = self.get_uri_for_scaled(iid, 27, 27, fn)
-                print f['icon_uri']
+
         retval = self.__topicImages
         
         assert type(retval) == list
@@ -144,8 +144,8 @@ class GSImageView(BrowserView):
     def prevImage(self):
         if self.__prevImage == None:
             files = self.images_in_topic()
-            currImgDate = self.imageMetadata['date']
-            prevs = [f for f in files if f['date'] < currImgDate]
+            ids = [f['file_id'] for f in files]
+            prevs = files[:ids.index(self.imageMetadata['file_id'])]
             self.__prevImage = prevs and prevs[-1] or None
         retval = self.__prevImage
         return retval
@@ -154,8 +154,8 @@ class GSImageView(BrowserView):
     def nextImage(self):
         if self.__nextImage == None:
             files = self.images_in_topic()
-            currImgDate = self.imageMetadata['date']
-            nexts = [f for f in files if f['date'] > currImgDate]
+            ids = [f['file_id'] for f in files]
+            nexts = files[ids.index(self.imageMetadata['file_id'])+1:]
             self.__nextImage = nexts and nexts[0] or None
         retval = self.__nextImage
         return retval

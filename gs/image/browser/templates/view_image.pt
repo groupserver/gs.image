@@ -13,6 +13,18 @@
       <span tal:replace="view/groupInfo/name"/>:
       <span tal:replace="view/siteInfo/name"/>
     </title>
+    <tal:block metal:fill-slot="metadata">
+      <link rel="prev" 
+        tal:define="prev view/prevImage | nothing"
+        tal:condition="prev"
+        tal:attributes="href string:/r/img/${prev/file_id}"/>
+      <link rel="up"
+        tal:attributes="href string:/r/post/${view/post/post_id}" />
+      <link rel="next"
+        tal:define="next view/nextImage| nothing"
+        tal:condition="next"
+        tal:attributes="href string:/r/img/${next/file_id}"/>
+    </tal:block>
   </head>
   <body>
     <div metal:fill-slot="body" class="image">
