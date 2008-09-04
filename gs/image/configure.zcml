@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configure xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:five="http://namespaces.zope.org/five">
+  xmlns:browser="http://namespaces.zope.org/browser">
   
-  <!-- declare a marker interface on the Image class to allow us 
-    to add marker Interfaces, views and adaptation -->
-  <five:implements class="OFS.Image.Image"
-    interface=".interfaces.IImage" />
-    
   <adapter provides=".interfaces.IGSImage"
-                for=".interfaces.IImage"
+                for="zope.app.file.interfaces.IImage"
                 permission="zope2.Public"
                 factory=".image.GSImage"
                 />

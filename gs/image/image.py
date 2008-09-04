@@ -1,6 +1,6 @@
 from Products.XWFCore.XWFUtils import locateDataDirectory
 
-from OFS.Image import Image 
+from zope.app.file.image import Image
 from zope.interface import implements
 from interfaces import IGSImage
 
@@ -17,8 +17,6 @@ class GSImage(object):
     
     def __init__(self, image):
         self.image = image
-        self.image_id = image.getId()
-        self.image_title = image.title_or_id()
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
         self.md5sum = md5.new(StringIO(image.data).read()).hexdigest()
         self.base_path = os.path.join(self.data_dir, self.md5sum)
@@ -42,14 +40,18 @@ class GSImage(object):
         cache_name = self.base_path+'%sx%sx%s' % (x,y,maintain_aspect)
         
         if os.path.isfile(cache_name):
-            img = Image(self.image_id, self.image_title, file(cache_name))
+            img = Image(file(cache_name))
+            # backwards compatibility with Zope2
+            img.width, img.height = img.getImageSize()
             img.fromCache = True
-        
+            
             return img
         
         # check to see that we're not already smaller than x,y
         if only_smaller:
-            if self.image.height <= y and self.image.width <= x:
+            width, height = self.image.getImageSize()
+            if height <= y and width <= x:
+                self.image.width, self.image.height = width, height
                 return self.image
         
         image = self._pilImage()
@@ -77,7 +79,9 @@ class GSImage(object):
 
         img.save(cache_name, image.format)
         
-        img = Image(self.image_id, self.image_title, file(cache_name))
+        img = Image(file(cache_name))
+        # backwards compatibility with Zope2
+        img.width, img.height = img.getImageSize()
         img.fromCache = False
         
         return img 

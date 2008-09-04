@@ -31,7 +31,7 @@ def test_gsimage():
       >>> import os
       >>> import Products.Five
       >>> import gs.image
-      >>> from OFS.Image import Image
+      >>> from zope.app.file.image import Image
       >>> from gs.image import image
       >>> from gs.image.interfaces import IGSImage
       
@@ -43,9 +43,8 @@ def test_gsimage():
 
       >>> _prefix = os.path.dirname(gs.image.tests.__file__)
 
-      >>> image = Image('whirlpool.jpg', 'whirlpool.jpg',
-      ...                  file(os.path.join(_prefix, 'whirlpool.jpg')))
-      >>> original_height, original_width = image.height, image.width
+      >>> image = Image(file(os.path.join(_prefix, 'whirlpool.jpg')))
+      >>> original_width, original_height = image.getImageSize()
       >>> original_aspect = float(original_width)/float(original_height)
       
     Setup the adapter
@@ -59,17 +58,13 @@ def test_gsimage():
       >>> resized_image = adapted_image.get_resized(width, height)
       >>> resized_image.fromCache
       False
-      >>> resized_image.size
-      33975L
-      >>> resized_image.content_type
+      >>> resized_image.contentType
       'image/jpeg'
       
       >>> resized_image = adapted_image.get_resized(width, height)
       >>> resized_image.fromCache
       True
-      >>> resized_image.size
-      33975L
-      >>> resized_image.content_type
+      >>> resized_image.contentType
       'image/jpeg'
     
     Check aspect ratio
@@ -102,8 +97,7 @@ def test_gsimage():
       >>> adapted_image._clean_cache()
       
     Test PNG support
-      >>> image = Image('warty-final-ubuntu.png', 'warty-final-ubuntu.png',
-      ...               file(os.path.join(_prefix, 'warty-final-ubuntu.png')))
+      >>> image = Image(file(os.path.join(_prefix, 'warty-final-ubuntu.png')))
       >>> adapted_image = IGSImage(image)
       >>> adapted_image._clean_cache()
       
@@ -119,8 +113,7 @@ def test_gsimage():
       >>> adapted_image._clean_cache()
       
     Test GIF support
-      >>> image = Image('grypaws.gif', 'grypaws.gif',
-      ...               file(os.path.join(_prefix, 'grypaws.gif')))
+      >>> image = Image(file(os.path.join(_prefix, 'grypaws.gif')))
       >>> adapted_image = IGSImage(image)
       >>> adapted_image._clean_cache()
 

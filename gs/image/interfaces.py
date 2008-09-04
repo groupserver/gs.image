@@ -1,10 +1,6 @@
 from zope.interface import Interface
 from zope.schema import *
 
-# marker interface for regular old image
-class IImage(Interface):
-    pass
-
 class IGSImageView(Interface):
     width = Int(title=u'Width',
         description=u'The width of the image',
@@ -15,7 +11,7 @@ class IGSImageView(Interface):
         default=432)
 
 class IGSImage(Interface):
-    def resize(x, y, maintain_aspect=True): #@NoSelf
+    def get_resized(x, y, maintain_aspect=True): #@NoSelf
         """ resize an image, maintaining the optionally maintaining
         the aspect ratio.
         
