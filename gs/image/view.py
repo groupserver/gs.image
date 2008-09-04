@@ -60,8 +60,11 @@ class GSImageView(BrowserView):
         self.__prevImage = None
         self.__topicImages = None
         
-        self.maxWidth = self.maxHeight = 432 # 24u on OGN
-
+        # --=mpj17=-- The image pages are optimised to view photographs,
+        #   which have a ratio of 4:3.
+        self.maxWidth = 432  # 24u on OGN
+        self.maxHeight = 576 # 32u on OGN
+        
         da = self.context.zsqlalchemy 
         assert da, 'No data-adaptor found'
         self.fileQuery = FileQuery(self.context, da)
