@@ -1,14 +1,12 @@
+# coding=utf-8
 from Products.XWFCore.XWFUtils import locateDataDirectory
-
 from zope.app.file.image import Image
 from zope.interface import implements
 from interfaces import IGSImage
-
 from PIL import Image as PILImage
-
 from StringIO import StringIO
-import md5
-import os
+import md5, os, logging
+log = logging.getLogger('GSImage') #@UndefinedVariable
 
 class GSImage(object):
     implements(IGSImage)
@@ -24,7 +22,6 @@ class GSImage(object):
     def _pilImage(self):
         data_reader = StringIO(self.image.data)
         img = PILImage.open(data_reader)
-        
         return img
         
     def get_resized(self, x, y, maintain_aspect=True, only_smaller=True):
@@ -55,7 +52,14 @@ class GSImage(object):
                 return self.image
         
         image = self._pilImage()
-        
+        origFormat = image.format # We will lose track of the format below
+        if (image.mode not in ('RGB', 'RGBA', 'RGBX', 'CMYK')):
+            try: # Try and convert the image to RGBA before scaling it
+                image = image.convert('RGBA')
+            except:
+              log.warning('Could not convert image to RGBA')
+              image = self._pilImage()
+
         if maintain_aspect:
             #
             # With thanks to kevin@cazabon.com:
@@ -63,7 +67,6 @@ class GSImage(object):
             #
             imAspect = float(image.size[0])/float(image.size[1])
             outAspect = float(x)/float(y)
-            
             if imAspect >= outAspect:
                 #set to maxWidth x maxWidth/imAspect
                 img = image.resize((x,
@@ -71,26 +74,26 @@ class GSImage(object):
                                     self.method)
             else:
                 #set to maxHeight*imAspect x maxHeight
-                img = image.resize((int((float(y)*imAspect) + 0.5),
-                                    y),
+                img = image.resize((int((float(y)*imAspect) + 0.5), y),
                                     self.method)
         else:
             img = image.resize((x,y), self.method)
 
-        img.save(cache_name, image.format)
+        if img.mode != image.mode:
+            # Change the image back to the original mode before saving
+            img = img.convert(image.mode)
+        img.save(cache_name, origFormat)
         
         img = Image(file(cache_name))
         # backwards compatibility with Zope2
         img.width, img.height = img.getImageSize()
         img.fromCache = False
-        
         return img 
     
     def _clean_cache(self):
-        """ Tidy up files that have been saved in association with this image.
-        
-        """
+        """ Tidy up files that have been saved in association with this 
+        image."""
         for fname in os.listdir(self.data_dir):
             if fname.find(self.md5sum) == 0:
                 os.remove(os.path.join(self.data_dir, fname))
-        
+
