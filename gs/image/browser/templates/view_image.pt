@@ -105,9 +105,13 @@
         </div><!--alternate-sizes-->
       </div><!--metadata-->
       
-      <img src="#" class="scaledImage"
-        tal:attributes="src view/scaledImageURI"/>
-        
+      <div id="scaled-image">
+        <a href="#" title="Full sized image"
+        tal:attributes="href view/fullImageURI;
+          title string:Full sized image (${view/fullImage/width} by ${view/fullImage/height} pixels)"><img src="#" 
+          class="scaledImage" 
+          tal:attributes="src view/scaledImageURI"/></a>
+      </div>
       <label for="linkurl">Link to this image</label>
       <input readonly="0" type="text" id="linkurl"
         tal:attributes="value string:${view/siteInfo/url}/r/img/${view/imageId}"/>
