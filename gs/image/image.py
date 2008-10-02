@@ -11,7 +11,7 @@ log = logging.getLogger('GSImage') #@UndefinedVariable
 class GSImage(object):
     implements(IGSImage)
     
-    method=PILImage.BICUBIC
+    method=PILImage.ANTIALIAS
     
     def __init__(self, image):
         self.image = image
