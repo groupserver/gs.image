@@ -1,7 +1,6 @@
 # coding=utf-8
 from Products.XWFCore.XWFUtils import locateDataDirectory
-from zope.app.file.image import Image, getImageInfo
-from zope.app.file.file  import File
+from zope.app.file.image import getImageInfo
 from zope.interface import implements
 from interfaces import IGSImage
 from PIL import Image as PILImage

@@ -1,13 +1,13 @@
 # coding=utf-8
 
 from Products.Five import BrowserView
-from zope.app.file.image import Image
 from zope.component import createObject, getMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import implements
 
 from interfaces import *
 from queries import FileQuery
+from image import GSImage
 
 import logging
 log = logging.getLogger('GSImageView')
@@ -49,7 +49,7 @@ class GSImageView(BrowserView):
         self.file = files[0].getObject()
         assert self.file
         
-        self.fullImage = Image(self.file.data)
+        self.fullImage = GSImage(self.file.data)
         # backwards compatibility to Zope2 style Image
         self.fullImage.width, self.fullImage.height = \
                                               self.fullImage.getImageSize()
