@@ -14,14 +14,15 @@ class GSImage(object):
     method=PILImage.ANTIALIAS # Resizing method
     
     def __init__(self, data):
-        self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
-        self.md5sum = md5.new(StringIO(data).read()).hexdigest()
-        self.base_path = os.path.join(self.data_dir, self.md5sum)
         if type(data) == file:
             self.data = data.read()
         else:
             self.data = data
         self.fromCache = False
+
+        self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
+        self.md5sum = md5.new(StringIO(self.data).read()).hexdigest()
+        self.base_path = os.path.join(self.data_dir, self.md5sum)
 
     @property
     def contentType(self):
@@ -96,6 +97,7 @@ class GSImage(object):
         if os.path.isfile(cache_name):
             retval = GSImage(file(cache_name, 'rb'))
             retval.fromCache = True
+            log.info(u'Using cache (%s)' % cache_name)
         elif (only_smaller 
               and (self._height <= y) and (self._width <= x)):
             retval = self # --=mpj17=-- Does this break stuff?
@@ -103,6 +105,7 @@ class GSImage(object):
             img = self._get_resized_img(x, y, maintain_aspect)
             img.save(cache_name, self._pilImage().format)
             retval = GSImage(file(cache_name, 'rb'))
+            log.info(u'Storing to cache (%s)' % cache_name)
         assert isinstance(retval, GSImage)
         return retval
         

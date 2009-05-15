@@ -50,10 +50,6 @@ class GSImageView(BrowserView):
         assert self.file
         
         self.fullImage = GSImage(self.file.data)
-        # backwards compatibility to Zope2 style Image
-        self.fullImage.width, self.fullImage.height = \
-                                              self.fullImage.getImageSize()
-
         self.__imageMetadata = None
         self.__authorInfo = None
         self.__nextImage = None
