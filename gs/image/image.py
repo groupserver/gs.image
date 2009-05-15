@@ -1,6 +1,7 @@
 # coding=utf-8
 from Products.XWFCore.XWFUtils import locateDataDirectory
-from zope.app.file.image import Image
+from zope.app.file.image import Image, getImageInfo
+from zope.app.file.file  import File
 from zope.interface import implements
 from interfaces import IGSImage
 from PIL import Image as PILImage
@@ -11,55 +12,106 @@ log = logging.getLogger('GSImage') #@UndefinedVariable
 class GSImage(object):
     implements(IGSImage)
     
-    method=PILImage.ANTIALIAS
+    method=PILImage.ANTIALIAS # Resizing method
     
-    def __init__(self, image):
-        self.image = image
+    def __init__(self, data):
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
-        self.md5sum = md5.new(StringIO(image.data).read()).hexdigest()
+        self.md5sum = md5.new(StringIO(data).read()).hexdigest()
         self.base_path = os.path.join(self.data_dir, self.md5sum)
+        self.data = data
+        self.fromCache = False
+
+    @property
+    def contentType(self):
+        assert isinstance(self._contentType, str)
+        return self._contentType
+
+    def _getData(self):
+        assert isinstance(self._data, str)
+        return self._data
+
+    def _setData(self, data):
+        '''Set  the image data. 
+        
+        Nicked from the Zope 3 Image and File classes.
+        
+        ARGUMENTS
+          data:   A string containing the data to set.
+          
+        RETURNS
+          None.
+          
+        SIDE EFFECTS
+          Sets "self._data" to contain the data.
+          Sets "self._size" to the length of the data.
+          Sets "self._contentType" to the content type of the image.
+          Sets "self._width" to the width of the image.
+          Sets "self._height" to the height of the image.'''
+          
+        assert isinstance(data, str)
+        self._data = data
+        self._size = len(data)
+        self._contentType, self._width, self._height = getImageInfo(data)
+        
+        assert self._data == data #--=mpj17=-- performance issue
+        assert isinstance(self._data, str)
+        assert isinstance(self._size, int)
+        assert isinstance(self._contentType, str)
+        assert isinstance(self._width, int)
+        assert isinstance(self._height, int)
+        
+    data = property(_getData, _setData)
+    
+    def getSize(self):
+        assert isinstance(self._size, int)
+        return self._size
+    
+    def getImageSize(self):
+        assert isinstance(self._width, int)
+        assert isinstance(self._height, int)
+        return (self._width, self._height)
+
+    @property
+    def width(self):
+        assert isinstance(self._width, int)
+        return self._width
+        
+    @property
+    def height(self):
+        assert isinstance(self._height, int)
+        return self._height
         
     def _pilImage(self):
-        data_reader = StringIO(self.image.data)
+        data_reader = StringIO(self._data)
         img = PILImage.open(data_reader)
         return img
-        
+
     def get_resized(self, x, y, maintain_aspect=True, only_smaller=True):
-        """ Resize an image, and return an Image instance of the resized image.
-        
-        This does not change the GSImage instance, since we may want to
-        resize a number of times.
-        
-        Optionally we can also force the aspect ratio to be maintained, and
-        only shrink the size.
-        
+        """SIDE EFFECTS
+            Caches the image data if it scales the image
         """
         cache_name = self.base_path+'%sx%sx%s' % (x,y,maintain_aspect)
-        
         if os.path.isfile(cache_name):
-            img = Image(file(cache_name))
-            # backwards compatibility with Zope2
-            img.width, img.height = img.getImageSize()
-            img.fromCache = True
-            
-            return img
+            retval = GSImage(file(cache_name))
+            retval.fromCache = True
+        elif (only_smaller 
+              and (self._height <= y) and (self._width <= x)):
+            retval = self # --=mpj17=-- Does this break stuff?
+        else:
+            img = self._get_resized_img(x, y, maintain_aspect)
+            img.save(cache_name, self._pilImage().format)
+            retval = GSImage(file(cache_name))
+        assert isinstance(retval, GSImage)
+        return retval
         
-        # check to see that we're not already smaller than x,y
-        if only_smaller:
-            width, height = self.image.getImageSize()
-            if height <= y and width <= x:
-                self.image.width, self.image.height = width, height
-                return self.image
-        
+    def _get_resized_img(self, x, y, maintain_aspect):
         image = self._pilImage()
-        origFormat = image.format # We will lose track of the format below
         if (image.mode not in ('RGB', 'RGBA', 'RGBX', 'CMYK')):
             try: # Try and convert the image to RGBA before scaling it
                 image = image.convert('RGBA')
             except:
               log.warning('Could not convert image to RGBA')
               image = self._pilImage()
-
         if maintain_aspect:
             #
             # With thanks to kevin@cazabon.com:
@@ -76,19 +128,13 @@ class GSImage(object):
                 #set to maxHeight*imAspect x maxHeight
                 img = image.resize((int((float(y)*imAspect) + 0.5), y),
                                     self.method)
-        else:
+        else: # not maintain_aspect
             img = image.resize((x,y), self.method)
-
         if img.mode != image.mode:
             # Change the image back to the original mode before saving
             img = img.convert(image.mode)
-        img.save(cache_name, origFormat)
-        
-        img = Image(file(cache_name))
-        # backwards compatibility with Zope2
-        img.width, img.height = img.getImageSize()
-        img.fromCache = False
-        return img 
+        assert isinstance(img, PILImage)
+        return img
     
     def _clean_cache(self):
         """ Tidy up files that have been saved in association with this 

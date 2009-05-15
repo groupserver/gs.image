@@ -33,7 +33,7 @@ def test_gsimage():
       >>> import gs.image
       >>> from zope.app.file.image import Image
       >>> from gs.image import image
-      >>> from gs.image.interfaces import IGSImage
+      >>> from gs.image import IGSImage
       
       >>> from Products.Five import zcml
 
