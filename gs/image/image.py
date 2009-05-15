@@ -17,7 +17,10 @@ class GSImage(object):
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
         self.md5sum = md5.new(StringIO(data).read()).hexdigest()
         self.base_path = os.path.join(self.data_dir, self.md5sum)
-        self.data = data
+        if type(data) == file:
+            self.data = data.read()
+        else:
+            self.data = data
         self.fromCache = False
 
     @property
@@ -47,7 +50,7 @@ class GSImage(object):
           Sets "self._width" to the width of the image.
           Sets "self._height" to the height of the image.'''
           
-        assert isinstance(data, str)
+        assert isinstance(data, str), 'Data is not a string'
         self._data = data
         self._size = len(data)
         self._contentType, self._width, self._height = getImageInfo(data)
@@ -132,7 +135,6 @@ class GSImage(object):
         if img.mode != image.mode:
             # Change the image back to the original mode before saving
             img = img.convert(image.mode)
-        assert isinstance(img, PILImage)
         return img
     
     def _clean_cache(self):
