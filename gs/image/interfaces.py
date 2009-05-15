@@ -13,7 +13,7 @@ class IGSImageView(Interface):
 
 class IGSImage(IImage):
     def get_resized(x, y, maintain_aspect=True): #@NoSelf
-        """Resize an image
+        u"""Resize an image
         
         DESCRIPTION
             This does not change the GSImage instance, since we may

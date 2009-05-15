@@ -2,11 +2,11 @@
 <configure xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser">
   
-  <adapter provides=".interfaces.IGSImage"
+  <!--adapter provides=".interfaces.IGSImage"
                 for="zope.app.file.interfaces.IImage"
                 permission="zope2.Public"
                 factory=".image.GSImage"
-                />
+                /-->
                 
   <!--View of the images -->
   <class class=".view.GSImageTraversal">

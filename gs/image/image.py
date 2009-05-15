@@ -91,7 +91,7 @@ class GSImage(object):
         """
         cache_name = self.base_path+'%sx%sx%s' % (x,y,maintain_aspect)
         if os.path.isfile(cache_name):
-            retval = GSImage(file(cache_name))
+            retval = GSImage(file(cache_name, 'rb'))
             retval.fromCache = True
         elif (only_smaller 
               and (self._height <= y) and (self._width <= x)):
@@ -99,7 +99,7 @@ class GSImage(object):
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
             img.save(cache_name, self._pilImage().format)
-            retval = GSImage(file(cache_name))
+            retval = GSImage(file(cache_name, 'rb'))
         assert isinstance(retval, GSImage)
         return retval
         
