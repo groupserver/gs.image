@@ -94,6 +94,8 @@ class GSImage(object):
         cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
         if cache_name:
             retval = GSImage(file(cache_name, 'rb'))
+            retval.fromCache = True
+            log.info(u'Using cache (%s)' % cache_name)
         assert isinstance(retval, GSImage)
         return retval
         
