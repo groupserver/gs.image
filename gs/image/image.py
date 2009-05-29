@@ -90,25 +90,29 @@ class GSImage(object):
         return img
 
     def get_resized(self, x, y, maintain_aspect=True, only_smaller=True):
+        retval = self
+        cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
+        if cache_name:
+            retval = GSImage(file(cache_name, 'rb'))
+        assert isinstance(retval, GSImage)
+        return retval
+        
+    def get_cache_name(self, x, y, maintain_aspect=True, only_smaller=True):
         """SIDE EFFECTS
             Caches the image data if it scales the image
         """
         cache_name = self.base_path+'%sx%sx%s' % (x,y,maintain_aspect)
-        if os.path.isfile(cache_name):
-            retval = GSImage(file(cache_name, 'rb'))
-            retval.fromCache = True
-            log.info(u'Using cache (%s)' % cache_name)
-        elif (only_smaller 
-              and (self._height <= y) and (self._width <= x)):
-            retval = self # --=mpj17=-- Does this break stuff?
+        if (only_smaller and (self._height <= y) and (self._width <= x)):
+            retval = None
+        elif os.path.isfile(cache_name):
+            retval = cache_name
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
             img.save(cache_name, self._pilImage().format)
-            retval = GSImage(file(cache_name, 'rb'))
             log.info(u'Storing to cache (%s)' % cache_name)
-        assert isinstance(retval, GSImage)
+            retval = cache_name
         return retval
-        
+    
     def _get_resized_img(self, x, y, maintain_aspect):
         image = self._pilImage()
         if (image.mode not in ('RGB', 'RGBA', 'RGBX', 'CMYK')):
