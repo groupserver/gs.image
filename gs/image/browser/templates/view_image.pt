@@ -89,7 +89,7 @@
           <span tal:content="t">mime/type</span>
         </div>
         <div id="alternate-sizes">
-          <h3>Alternate Sizes</h3>
+          <h3>Other Sizes</h3>
           <p>
             <a href="#"
               tal:attributes="href view/fullImageURI">Full sized image:</a>
