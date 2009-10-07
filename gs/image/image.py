@@ -94,8 +94,6 @@ class GSImage(object):
         cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
         if cache_name:
             retval = GSImage(file(cache_name, 'rb'))
-            retval.fromCache = True
-            log.info(u'Using cache (%s)' % cache_name)
         assert isinstance(retval, GSImage)
         return retval
         
@@ -108,6 +106,7 @@ class GSImage(object):
             retval = None
         elif os.path.isfile(cache_name):
             retval = cache_name
+            log.info(u'Was cached (%s)' % cache_name)
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
             img.save(cache_name, self._pilImage().format)
@@ -121,8 +120,8 @@ class GSImage(object):
             try: # Try and convert the image to RGBA before scaling it
                 image = image.convert('RGBA')
             except:
-              log.warning('Could not convert image to RGBA')
-              image = self._pilImage()
+                log.warning('Could not convert image to RGBA')
+                image = self._pilImage()
         if maintain_aspect:
             #
             # With thanks to kevin@cazabon.com:
@@ -152,4 +151,3 @@ class GSImage(object):
         for fname in os.listdir(self.data_dir):
             if fname.find(self.md5sum) == 0:
                 os.remove(os.path.join(self.data_dir, fname))
-

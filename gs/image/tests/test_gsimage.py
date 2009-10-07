@@ -53,15 +53,11 @@ def test_gsimage():
     Resize an image -- do it twice, the second time should have been cached
       >>> width, height = (640, 480)
       >>> resized_image = image.get_resized(width, height)
-      >>> resized_image.fromCache
-      False
       >>> resized_image.contentType
       'image/jpeg'
       >>> resized_image.contentType == image.contentType
       True
-      >>> resized_image = adapted_image.get_resized(width, height)
-      >>> resized_image.fromCache
-      True
+      >>> resized_image = image.get_resized(width, height)
     
     Check aspect ratio
       >>> resized_image.height, resized_image.width

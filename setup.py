@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0a2'
+from version import get_version
 
 setup(name='gs.image',
-      version=version,
+      version=get_version(),
       description="Image manipulation and display on GroupServer",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
