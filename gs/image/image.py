@@ -106,11 +106,9 @@ class GSImage(object):
             retval = None
         elif os.path.isfile(cache_name):
             retval = cache_name
-            log.info(u'Was cached (%s)' % cache_name)
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
             img.save(cache_name, self._pilImage().format)
-            log.info(u'Storing to cache (%s)' % cache_name)
             retval = cache_name
         return retval
     
