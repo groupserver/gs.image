@@ -23,7 +23,7 @@ class GSImage(object):
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")    
         self.md5sum = md5.new(StringIO(self.data).read()).hexdigest()
         self.base_path = os.path.join(self.data_dir, self.md5sum)
-
+    
     @property
     def contentType(self):
         assert isinstance(self._contentType, str)
@@ -89,12 +89,20 @@ class GSImage(object):
         img = PILImage.open(data_reader)
         return img
 
-    def get_resized(self, x, y, maintain_aspect=True, only_smaller=True):
-        retval = self
+    def get_resized(self, x, y, maintain_aspect=True, only_smaller=True,
+                    return_cache_path=False):
+        """ Get the resized image, or the path to the resized image.
+
+        """
+        retval = None
+        if not return_cache_path:
+            retval = self
         cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
-        if cache_name:
+        if cache_name and not return_cache_path:
             retval = GSImage(file(cache_name, 'rb'))
-        assert isinstance(retval, GSImage)
+        else:
+            retval = cache_name
+        
         return retval
         
     def get_cache_name(self, x, y, maintain_aspect=True, only_smaller=True):
