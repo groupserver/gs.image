@@ -17,12 +17,10 @@ class GSImageTraversal(BrowserView):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
-        self.imageId = None
-                
+        
     def publishTraverse(self, request, name):
-        if self.imageId == None:
-            self.imageId = name
+        if request.get('imageId', None) == None:
+            request['imageId'] = name
             
         return self
     
@@ -38,7 +36,7 @@ class GSImageView(BrowserView):
         self.siteInfo = createObject('groupserver.SiteInfo', context)
         self.groupInfo = createObject('groupserver.GroupInfo', context)
 
-        self.imageId = context.imageId
+        self.imageId = request.get('imageId', None)
         
         assert hasattr(self.groupInfo.groupObj, 'files'), \
           'No "files" in %s (%s)' % (self.groupInfo.name, self.groupInfo.id)
