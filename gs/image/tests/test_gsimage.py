@@ -1,27 +1,4 @@
 # coding=utf-8
-##############################################################################
-#
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
-# All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
-"""Size adapters for testing
-
-$Id: test_size.py 61072 2005-10-31 17:43:51Z philikon $
-"""
-import os, sys
-if __name__ == '__main__':
-    execfile(os.path.join(sys.path[0], 'framework.py'))
-
-#      >>> zcml.load_config('meta.zcml', Products.Five)
-#      >>> zcml.load_config('permissions.zcml', Products.Five)
 
 def test_gsimage():
     """
@@ -43,13 +20,8 @@ def test_gsimage():
 
       >>> config = getConfiguration()
       >>> config.clienthome = os.path.join(_prefix, 'tempdata')
-
-      # BBB for Zope 2.12
-      >>> try:
-      ...     from Zope2.App import zcml
-      ... except ImportError:
-      ...     from Products.Five import zcml
-
+      
+      >>> from Zope2.App import zcml
       >>> zcml.load_config('configure.zcml', Products.Five)
       >>> zcml.load_config('configure.zcml', gs.image)
 
@@ -139,10 +111,7 @@ def test_gsimage():
       >>> tearDown()
       
     """
-
+    
 def test_suite():
     from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
-
-if __name__ == '__main__':
-    framework()
