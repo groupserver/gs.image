@@ -95,13 +95,14 @@ class GSImage(object):
 
         """
         retval = None
-        if not return_cache_path:
-            retval = self
         cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
-        if cache_name and not return_cache_path:
+        if return_cache_path:
+            # possibly None if no resizing was done
+            retval = cache_name
+        elif cache_name:
             retval = GSImage(file(cache_name, 'rb'))
         else:
-            retval = cache_name
+            retval = self
         
         return retval
         
