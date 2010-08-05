@@ -20,6 +20,9 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+#      >>> zcml.load_config('meta.zcml', Products.Five)
+#      >>> zcml.load_config('permissions.zcml', Products.Five)
+
 def test_gsimage():
     """
     Test GSImage and adapters
@@ -29,19 +32,26 @@ def test_gsimage():
       >>> setUp()
       >>> import md5
       >>> import os
+ 
       >>> import Products.Five
       >>> import gs.image
       >>> from zope.app.file.image import Image
       >>> from gs.image import image
       >>> from gs.image import GSImage
-      
-      >>> from Products.Five import zcml
-
-      >>> zcml.load_config('meta.zcml', Products.Five)
-      >>> zcml.load_config('permissions.zcml', Products.Five)
-      >>> zcml.load_config('configure.zcml', gs.image)
-
+      >>> from App.config import getConfiguration
       >>> _prefix = os.path.dirname(gs.image.tests.__file__)
+
+      >>> config = getConfiguration()
+      >>> config.clienthome = os.path.join(_prefix, 'tempdata')
+
+      # BBB for Zope 2.12
+      >>> try:
+      ...     from Zope2.App import zcml
+      ... except ImportError:
+      ...     from Products.Five import zcml
+
+      >>> zcml.load_config('configure.zcml', Products.Five)
+      >>> zcml.load_config('configure.zcml', gs.image)
 
       >>> image = GSImage(file(os.path.join(_prefix, 'whirlpool.jpg')))
       >>> original_width, original_height = image.getImageSize()

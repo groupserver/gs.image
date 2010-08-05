@@ -1,5 +1,5 @@
 from zope.interface import Interface
-from zope.schema import *
+from zope.schema import Int
 from zope.app.file.interfaces import IImage
 
 class IGSImageView(Interface):

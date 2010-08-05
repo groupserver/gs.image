@@ -5,7 +5,7 @@ from zope.component import createObject, getMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import implements
 
-from interfaces import *
+from interfaces import IGSImageView
 from queries import FileQuery
 from image import GSImage
 
@@ -25,7 +25,7 @@ class GSImageTraversal(BrowserView):
         return self
     
     def __call__(self):
-      return getMultiAdapter((self.context, self.request), 
+        return getMultiAdapter((self.context, self.request),
                              name="gsimage")()
 
 class GSImageView(BrowserView):
@@ -66,7 +66,7 @@ class GSImageView(BrowserView):
     @property
     def scaledImageURI(self):
         # http://wibble.com/groups/bar/files/f/abc123/resize/500/500/foo.jpg
-        retval = self.get_uri_for_scaled(self.imageId, self.maxWidth, 
+        retval = self.get_uri_for_scaled(self.imageId, self.maxWidth,
                                          self.maxHeight, self.filename)
         assert self.imageId in retval
         return retval
@@ -89,8 +89,8 @@ class GSImageView(BrowserView):
     @property
     def filename(self):
         # Inspried by the get_file method of the virtual file library.
-        title  =  self.file.getProperty('title', '')
-        retval =  self.file.getProperty('filename', title).strip()
+        title = self.file.getProperty('title', '')
+        retval = self.file.getProperty('filename', title).strip()
         return retval
 
     @property
@@ -111,7 +111,7 @@ class GSImageView(BrowserView):
     def authorInfo(self):
         if self.__authorInfo == None:
             authorId = self.post['author_id']
-            self.__authorInfo = createObject('groupserver.UserFromId', 
+            self.__authorInfo = createObject('groupserver.UserFromId',
                                              self.context, authorId)
         retval = self.__authorInfo
         return retval
@@ -156,7 +156,7 @@ class GSImageView(BrowserView):
         if self.__nextImage == None:
             files = self.images_in_topic()
             ids = [f['file_id'] for f in files]
-            nexts = files[ids.index(self.imageMetadata['file_id'])+1:]
+            nexts = files[ids.index(self.imageMetadata['file_id']) + 1:]
             self.__nextImage = nexts and nexts[0] or None
         retval = self.__nextImage
         return retval

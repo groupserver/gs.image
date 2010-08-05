@@ -6,7 +6,7 @@ from interfaces import IGSImage
 from PIL import Image as PILImage
 from StringIO import StringIO
 import md5, os, logging
-log = logging.getLogger('GSImage') #@UndefinedVariable
+log = logging.getLogger('GSImage')
 
 class GSImage(object):
     implements(IGSImage)

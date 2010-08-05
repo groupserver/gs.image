@@ -1,5 +1,4 @@
 # coding=utf-8
-import sqlalchemy as sa
 from Products.XWFMailingListManager.queries import MessageQuery
 
 class FileQuery(MessageQuery):
