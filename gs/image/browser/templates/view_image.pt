@@ -29,7 +29,7 @@
         by
         <span tal:content="view/authorInfo/name">An Author</span></h1>
       
-      <ul id="navigation">
+      <ul id="navigation" class="inline-list">
         <li class="prevlink" 
           tal:define="prev view/prevImage | nothing">
           <a tal:condition="prev"
@@ -45,7 +45,7 @@
               tal:content="view/topic/subject">A Topic</span></a>
         </li>
         <li class="nextlink"
-          tal:define="next view/nextImage| nothing">
+          tal:define="next view/nextImage| nothing">  
           <a tal:condition="next"
             tal:attributes="href string:/r/img/${next/file_id}"
             href="#"><img src="#" tal:attributes="src next/icon_uri"/> 
@@ -53,7 +53,6 @@
           <span tal:condition="not:next">Next Image</span>
         </li>
       </ul>
-      <div class="noFloat">&#160;</div>
       <div class="metadata"
         tal:define="munge_date python:modules['Products.XWFCore.XWFUtils'].munge_date;
           t view/imageMetadata/mime_type;">
@@ -84,12 +83,7 @@
             tal:attributes="class string:fileName ${icon};"
             tal:content="view/filename">file.name</code>
         </div>
-        <div id="type">
-          <strong>Type:</strong>
-          <span tal:content="t">mime/type</span>
-        </div>
         <div id="alternate-sizes">
-          <h3>Other Sizes</h3>
           <p>
             <a href="#"
               tal:attributes="href view/fullImageURI">Full sized image:</a>
