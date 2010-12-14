@@ -48,8 +48,8 @@
           tal:define="next view/nextImage| nothing">  
           <a tal:condition="next" class="next"
             tal:attributes="href string:/r/img/${next/file_id}"
-            href="#"><img src="#" tal:attributes="src next/icon_uri"/> 
-            Next Image</a>
+            href="#">Next Image
+            <img src="#" tal:attributes="src next/icon_uri"/></a>
           <span tal:condition="not:next" class="next">Next
             Image</span>
         </li>
@@ -79,9 +79,10 @@
         </div>
         <div id="filename">
           <strong>Name:</strong>
-          <code class="fileName" 
+          <span href="#"
             tal:define="icon python:t.replace('/','-').replace('.','-').strip()"
-            tal:attributes="class string:fileName ${icon};"
+            tal:attributes="class string:fileIcon ${icon}">&#160;</span>
+          <code class="fileName" 
             tal:content="view/filename">file.name</code>
         </div>
         <div id="alternate-sizes">
