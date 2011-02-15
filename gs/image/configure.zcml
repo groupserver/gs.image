@@ -9,23 +9,5 @@
                 /-->
                 
   <!--View of the images -->
-  <class class=".view.GSImageTraversal">
-    <implements interface="zope.publisher.interfaces.IPublishTraverse"/>
-  </class>
-  <browser:page 
-    for="Products.XWFMailingListManager.interfaces.IGSMessagesFolder" 
-    name="image"
-    class=".view.GSImageTraversal"
-    permission="zope2.View" />
-
-  <class class=".view.GSImageView">
-    <implements interface=".interfaces.IGSImageView"/>
-  </class>
-  <browser:page 
-    for="Products.XWFMailingListManager.interfaces.IGSMessagesFolder" 
-    name="gsimage"
-    class=".view.GSImageView"
-    template="browser/templates/view_image.pt" 
-    permission="zope2.Public" />
 
 </configure>
