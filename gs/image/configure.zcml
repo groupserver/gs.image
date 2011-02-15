@@ -7,7 +7,5 @@
                 permission="zope2.Public"
                 factory=".image.GSImage"
                 /-->
-                
-  <!--View of the images -->
 
 </configure>
