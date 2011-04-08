@@ -117,6 +117,8 @@ class GSImage(object):
             retval = cache_name
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
+            # TODO Ticket 663
+            # <https://projects.iopen.net/groupserver/ticket/663>
             img.save(cache_name, self._pilImage().format)
             retval = cache_name
         return retval
