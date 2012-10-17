@@ -24,6 +24,11 @@ setup(name='gs.image',
       zip_safe=True,
       install_requires=[
           'setuptools',
+          'PIL',
+          'zope.app.file',
+          'zope.interface',
+          'zope.schema',
+          'Products.XWFCore',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
