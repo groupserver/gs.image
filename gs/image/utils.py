@@ -62,3 +62,18 @@ def thumbnail_img_noaspect(i, x, y, method=Image.ANTIALIAS):
     if img.mode != i.mode:
         img = img.convert(i.mode)
     return img
+
+
+def thumbnail_image_square(i, size, method=Image.ANTIALIAS):
+    origWidth, origHeight = i.size
+
+    # Scale the short axis to the new size, leaving the long axis
+    # unconstrained.
+    if origHeight <= origWidth:
+        scaledImage = thumbnail_img(i, origWidth, size)
+    else:
+        scaledImage = thumbnail_img(i, size, origHeight)
+    # Truncate the long axis to the new size.
+    box = (0, 0, size, size)
+    retval = scaledImage.crop(box)
+    return retval
