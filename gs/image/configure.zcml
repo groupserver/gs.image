@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configure xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <class class=".image.GSImage">
+    <implements interface=".interfaces.IGSImage"/>
+  </class>
   
   <!--adapter provides=".interfaces.IGSImage"
                 for="zope.app.file.interfaces.IImage"

@@ -3,18 +3,12 @@ import md5
 import os
 from Products.XWFCore.XWFUtils import locateDataDirectory
 from zope.app.file.image import getImageInfo
-from zope.interface import implements
-from interfaces import IGSImage
 from PIL import Image as PILImage
 from StringIO import StringIO
-
-import logging
-log = logging.getLogger('GSImage')
+from utils import thumbnail_img, thumbnail_img_noaspect
 
 
 class GSImage(object):
-    implements(IGSImage)
-    method = PILImage.ANTIALIAS  # Resizing method
 
     def __init__(self, data):
         if type(data) == file:
@@ -59,7 +53,7 @@ class GSImage(object):
         self._size = len(data)
         self._contentType, self._width, self._height = getImageInfo(data)
 
-        assert self._data == data  # --=mpj17=-- performance issue
+        # assert self._data == data  # --=mpj17=-- performance issue
         assert isinstance(self._data, str)
         assert isinstance(self._size, int)
         assert isinstance(self._contentType, str)
@@ -87,7 +81,7 @@ class GSImage(object):
         assert isinstance(self._height, int)
         return self._height
 
-    def _pilImage(self):
+    def pilImage(self):
         data_reader = StringIO(self._data)
         img = PILImage.open(data_reader)
         return img
@@ -122,42 +116,17 @@ class GSImage(object):
             img = self._get_resized_img(x, y, maintain_aspect)
             # TODO Ticket 663
             # <https://projects.iopen.net/groupserver/ticket/663>
-            img.save(cache_name, self._pilImage().format)
+            img.save(cache_name, self.pilImage().format)
             retval = cache_name
         return retval
 
     def _get_resized_img(self, x, y, maintain_aspect):
-        #
-        # With thanks to kevin@cazabon.com:
-        # http://mail.python.org/pipermail/image-sig/2006-January/003724.html
-        #
-        image = self._pilImage()
-        if (image.mode not in ('RGB', 'RGBA', 'RGBX', 'CMYK')):
-            try:
-                # Try and convert the image to RGBA before scaling it
-                image = image.convert('RGBA')
-            except:
-                log.warning('Could not convert image to RGBA')
-                image = self._pilImage()
+        i = self.pilImage()
         if maintain_aspect:
-            imAspect = float(image.size[0]) / float(image.size[1])
-            outAspect = float(x) / float(y)
-            if imAspect >= outAspect:
-                #set to maxWidth x maxWidth/imAspect
-                img = image.resize((x,
-                                    int((float(x) / imAspect) + 0.5)),
-                                    self.method)
-            else:
-                #set to maxHeight*imAspect x maxHeight
-                img = image.resize((int((float(y) * imAspect) + 0.5), y),
-                                    self.method)
+            retval = thumbnail_img(i, x, y)
         else:
-            # not maintain_aspect
-            img = image.resize((x, y), self.method)
-        if img.mode != image.mode:
-            # Change the image back to the original mode before saving
-            img = img.convert(image.mode)
-        return img
+            retval = thumbnail_img_noaspect(i, x, y)
+        return retval
 
     def _clean_cache(self):
         """ Tidy up files that have been saved in association with this
