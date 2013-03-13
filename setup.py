@@ -24,7 +24,7 @@ setup(name='gs.image',
       zip_safe=True,
       install_requires=[
           'setuptools',
-          'Pillow', # Provides PIL
+          'Pillow',  # Provides PIL
           'zope.app.file',
           'zope.interface',
           'zope.schema',
