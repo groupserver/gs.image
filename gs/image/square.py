@@ -14,7 +14,7 @@ class GSSquareImage(GSImage):
         retval = None
         cache_name = self.get_cache_name(size)
         if cache_name:
-            retval = GSImage(file(cache_name, 'rb'))
+            retval = GSSquareImage(file(cache_name, 'rb'))
         else:
             retval = self
 
