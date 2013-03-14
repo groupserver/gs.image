@@ -52,6 +52,7 @@ class GSImage(object):
         self._data = data
         self._size = len(data)
         self._contentType, self._width, self._height = getImageInfo(data)
+        self._pilImage = None
 
         # assert self._data == data  # --=mpj17=-- performance issue
         assert isinstance(self._data, str)
@@ -82,9 +83,10 @@ class GSImage(object):
         return self._height
 
     def pilImage(self):
-        data_reader = StringIO(self._data)
-        img = PILImage.open(data_reader)
-        return img
+        if self._pilImage is None:
+            data_reader = StringIO(self._data)
+            self._pilImage = PILImage.open(data_reader)
+        return self._pilImage
 
     def get_resized(self, x, y, maintain_aspect=True, only_smaller=True,
                     return_cache_path=False):
@@ -114,9 +116,7 @@ class GSImage(object):
             retval = cache_name
         else:
             img = self._get_resized_img(x, y, maintain_aspect)
-            # TODO Ticket 663
-            # <https://projects.iopen.net/groupserver/ticket/663>
-            img.save(cache_name, self.pilImage().format)
+            self.save_img_to_cache(img, cache_name)
             retval = cache_name
         return retval
 
@@ -127,6 +127,25 @@ class GSImage(object):
         else:
             retval = thumbnail_img_noaspect(i, x, y)
         return retval
+
+    def save_img_to_cache(self, img, cache_name):
+        imgFormat = self.pilImage().format
+        if imgFormat == 'JPEG':
+            # See Ticket 663 <https://redmine.iopen.net/issues/663>
+            m = min(img.size)
+            if m <= 50:
+                quality = 40  # You got 40px? No quality for you.
+                progressive = False
+            elif m <= 200:
+                quality = 60  # Medium quality.
+                progressive = False
+            else:
+                quality = 75  # This is *high* according to the JPEG standard.
+                progressive = True
+            img.save(cache_name, imgFormat, quality=quality,
+                        progressive=progressive, optimize=True)
+        else:
+            img.save(cache_name, imgFormat)
 
     def _clean_cache(self):
         """ Tidy up files that have been saved in association with this

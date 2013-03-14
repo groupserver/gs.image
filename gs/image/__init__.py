@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
-from image import GSImage  # lint:ok
-from square import GSSquareImage  # lint:ok
-from utils import thumbnail_img, thumbnail_img_noaspect  # lint:ok
+#lint:disable
+from image import GSImage
+from square import GSSquareImage
+from utils import thumbnail_img, thumbnail_img_noaspect, thumbnail_img_square
+#lint:enable

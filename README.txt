@@ -59,12 +59,15 @@ Methods
 
 ``get_resized(x, y, maintain_aspect=True, only_smaller=True, return_cache_path=False)``:
   Returns a new ``GSImage``, with a maximum width of ``x`` and a maximum
-  height of ``y``. If ``maintain_aspect`` is ``True`` then the aspect ratio
-  of the new image (``x/y``) will be the same as the aspect ratio of the
-  old image. If ``only_smaller`` is ``True`` then the image will be scaled
-  only if it is smaller. Finally [#command]_, if ``return_cache`` is
-  ``True`` then the path to the file in the cache is returned, not the
-  image (see `Side Effects`_ below).
+  height of ``y``. 
+
+  * If ``maintain_aspect`` is ``True`` then the aspect ratio of the new
+    image (``x/y``) will be the same as the aspect ratio of the old image.
+  * If ``only_smaller`` is ``True`` then the image will be scaled
+    only if it is smaller. 
+  * Finally [#command]_, if ``return_cache`` is ``True`` then the path to
+    the file in the cache is returned, not the image (see `Side Effects`_
+    below).
 
 Side Effects
 ------------
@@ -81,6 +84,29 @@ The file-name is made up of ``{md5}{width}x{height}x{maintainAspect}``:
 * ``width``: The width of the image.
 * ``height``: The height of the image.
 * ``maintainAspect``: If the aspect ratio was kept.
+
+The cached image will be of the same type as the original image. However,
+the quality_ may be set to a different value.
+
+Quality
+~~~~~~~
+
+If the base image is a JPEG, then the quality of the image is set depending
+on the size of the *smallest* dimension. The idea is that the low quality
+is less noticeable at small sizes. For large sizes progressive-rendering is
+turned on, so the time-to-glass is reduced. The different quality settings
+at different sizes is as follows:
+
+================ =======
+Size             Quality
+================ =======
+s <= 50px             40
+50 < s <= 200px       60
+s > 200px             75  
+================ =======
+
+If the base image is something other than a JPEG (such as a PNG) then it is
+simply resized.
 
 Examples
 --------
