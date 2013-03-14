@@ -8,7 +8,7 @@ Image support for GroupServer
 :Authors: `Michael JasonSmith`_,
          Richard Waid
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2013-03-13
+:Date: 2013-03-14
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
   `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
@@ -17,21 +17,35 @@ Image support for GroupServer
 Introduction
 ============
 
-GroupServer_ displays images in many places: profiles [#profiles]_, in
-posts [#posts]_, and on the Image page [#image]_. GroupServer uses PIL_ to
-provide support for resizing the images. This product provides the GSImage_
-class to resize and implicitly cache images. The resizing is done by one of
-two utilities_.
+GroupServer_ displays images in many places, including on profiles
+[#profiles]_, in posts [#posts]_, and on the Image page [#image]_. This egg
+wraps some functions provided by PIL_ to provide support to the other
+products for resizing and caching images. The functionality of this product
+is primarily provided by two classes:
+
+* GSImage_ is used to resize and implicitly cache images. 
+* The GSSquareImage_ class resizes and crops the images to ensure they are
+  square, before implicitly caching the result.
+
+The resizing is done by one of three utilities_.
 
 ``GSImage``
 ===========
 
-The ``GSImage`` class provides an application cache for images. This means
-the computationally-expensive task of creating a thumbnail only has to be
-done once.
+The ``gs.image.GSImage`` class provides an application cache for
+images. This means the computationally-expensive task of creating a
+thumbnail only has to be done once. It also provides convenient methods_
+for integrating and resizing the image.
 
-:Constructor: ``GSImage(data)`` where ``data`` is either a ``file`` or a
-              byte-array (string) containing the image.
+Constructor
+-----------
+
+::
+
+ GSImage(data)
+
+``data``:
+  Either a ``file`` or a byte-array (string) containing the image.
 
 Properties
 ----------
@@ -140,10 +154,48 @@ Return a scaled image from a Zope page view by over-writing the
             return retval
 
 
+``GSSquareImage``
+=================
+
+The ``gs.image.GSSquareImage`` class resizes images, just like the parent
+GSImage_ class, but all images are made square. It inherits the same
+constructor_, and properties_ as its parent. However, the `get_resized`_
+method is different.
+
+``get_resized``
+---------------
+
+Get a resized square image.
+
+:Synopsis: ``get_resized(size)``
+
+:Description: The ``get_resized`` method resizes the image, so neither the
+              width nor the height will exceed the ``size``, and both will
+              be the same. See `thumbnail_img_square`_ for more details on
+              the algorithm used to do this.
+
+:Arguments: ``size`` the maximum width and height of the image in pixels.
+
+:Returns: A new ``GSSquareImage``.
+
+Example
+-------
+
+Create a square image, 32 pixels on a side::
+
+  f = file(fileName)
+  i = GSSquareImage(f)
+  scaledImage = i.get_resized(32)
+
+
 Utilities
 =========
 
-Two utilities are provided `thumbnail_img`_ and `thumbnail_img_noaspect`_.
+Three utilities are provided 
+
+#. `thumbnail_img`_ 
+#. `thumbnail_img_noaspect`_
+#. `thumbnail_img_square`_
 
 ``thumbnail_img``
 -----------------
@@ -209,6 +261,38 @@ Create a thumbnail of an image, without maintaining the aspect ratio.
 
 :Returns: A new image. The width be ``x``, and height will be ``y``.
 
+``thumbnail_img_square``
+------------------------
+
+Create a square thumbnail image.
+
+:Synopsis: ``thumbnail_img_square(i, size, method=Image.ANTIALIAS)``
+
+:Description: The ``thumbnail_img_square`` method creates a square version
+              of the original image.
+
+              * First, it scales the image so the shortest axis is ``size``
+                pixels, leaving the long axis unconstrained.
+
+              * Second, it crops the image, so the long axis is ``size``
+                pixels. The cropping is done from the top-left
+                corner. (There may need to be a top-right version used when
+                non-Roman scripts are introduced to GroupServer.)
+
+:Arguments:
+
+  ``i``:
+    The image to resize.
+
+  ``size``:
+    The width and height of the new image, in pixels.
+
+  ``method``
+    The scaling method.
+
+:Returns: A new image. The width will be ``size``, and height will be
+          ``size``.
+
 Authors
 =======
 
@@ -240,3 +324,5 @@ Resources
 
 .. [#command] The ``get_resized`` method is a good example of why
               command-coupling is a Bad Thing.
+
+..  LocalWords:  resizes GSSquareImage
