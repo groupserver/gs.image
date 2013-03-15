@@ -48,7 +48,8 @@ class GSImage(object):
           Sets "self._width" to the width of the image.
           Sets "self._height" to the height of the image.'''
 
-        assert isinstance(data, str), 'Data is not a string'
+        assert isinstance(data, str),\
+            'Data is a {0} not a string'.format(type(data))
         self._data = data
         self._size = len(data)
         self._contentType, self._width, self._height = getImageInfo(data)
