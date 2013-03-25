@@ -8,7 +8,7 @@ Image support for GroupServer
 :Authors: `Michael JasonSmith`_,
          Richard Waid
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2013-03-14
+:Date: 2013-03-26
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
   `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
@@ -126,7 +126,7 @@ Examples
 --------
 
 Resize the image in ``fileName``, ensuring neither dimension is more than
-128 px::
+128px::
 
   f = file(fileName)
   i = GSImage(f)
@@ -325,4 +325,5 @@ Resources
 .. [#command] The ``get_resized`` method is a good example of why
               command-coupling is a Bad Thing.
 
-..  LocalWords:  resizes GSSquareImage
+..  LocalWords:  resizes GSSquareImage getSize px resized ANTIALIAS mpj
+..  LocalWords:  retval noaspect LocalWords resize
