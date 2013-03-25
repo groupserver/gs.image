@@ -8,11 +8,17 @@ setup(name='gs.image',
       description="Image manipulation and display on GroupServer",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
+          "Development Status :: 4 - Beta",
+          "Environment :: Web Environment",
+          "Framework :: Zope2",
+          "Intended Audience :: Developers",
+          "License :: Other/Proprietary License",
+          "Natural Language :: English",
+          "Operating System :: POSIX :: Linux"
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+      ],
       keywords='image groupserver',
       author='Richard Waid',
       author_email='richard@onlinegroups.net',
@@ -26,10 +32,8 @@ setup(name='gs.image',
           'setuptools',
           'Pillow',  # Provides PIL
           'zope.app.file',
-          'zope.interface',
           'zope.schema',
           'Products.XWFCore',
-          # -*- Extra requirements: -*-
       ],
       entry_points="""
       # -*- Entry points: -*-
