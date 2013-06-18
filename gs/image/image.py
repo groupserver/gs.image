@@ -147,7 +147,7 @@ class GSImage(object):
                 img.save(cache_name, imgFormat, quality=quality,
                          progressive=progressive, optimize=True)
             except IOError, e:
-                ImageFile.MAXBLOCK = self.getSize() * 2
+                ImageFile.MAXBLOCK = self.size * 2
                 img.save(cache_name, imgFormat, quality=quality,
                          progressive=progressive, optimize=True)
         else:
