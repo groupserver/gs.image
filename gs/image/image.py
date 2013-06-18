@@ -146,8 +146,13 @@ class GSImage(object):
             try:
                 img.save(cache_name, imgFormat, quality=quality,
                          progressive=progressive, optimize=True)
-            except IOError, e:
-                ImageFile.MAXBLOCK = self.size * 2
+            except IOError:
+                # --=mj17=-- Increase the size of the "block" used by libjpeg
+                #    so we can scale stupidly large images, and retain
+                #    progressive rendering.
+                #    http://stackoverflow.com/questions/6788398/
+                s = img.size[0] * img.size[1]
+                ImageFile.MAXBLOCK = s
                 img.save(cache_name, imgFormat, quality=quality,
                          progressive=progressive, optimize=True)
         else:
