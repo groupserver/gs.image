@@ -3,7 +3,7 @@ import md5
 import os
 from Products.XWFCore.XWFUtils import locateDataDirectory
 from zope.app.file.image import getImageInfo
-from PIL import Image as PILImage
+from PIL import Image as PILImage, ImageFile
 from StringIO import StringIO
 from utils import thumbnail_img, thumbnail_img_noaspect
 
@@ -143,8 +143,13 @@ class GSImage(object):
             else:
                 quality = 75  # This is *high* according to the JPEG standard.
                 progressive = True
-            img.save(cache_name, imgFormat, quality=quality,
-                        progressive=progressive, optimize=True)
+            try:
+                img.save(cache_name, imgFormat, quality=quality,
+                         progressive=progressive, optimize=True)
+            except IOError, e:
+                ImageFile.MAXBLOCK = self.getSize() * 2
+                img.save(cache_name, imgFormat, quality=quality,
+                         progressive=progressive, optimize=True)
         else:
             img.save(cache_name, imgFormat)
 
