@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import unicode_literals
 from PIL import Image
 
 
 def rgba(image):
-    u'''Try and convert the image to RGBA '''
+    '''Try and convert the image to RGBA '''
     retval = image
     if (image.mode not in ('RGB', 'RGBA', 'RGBX', 'CMYK')):
         try:
@@ -14,7 +28,7 @@ def rgba(image):
 
 
 def thumbnail_img(i, x, y, method=Image.ANTIALIAS):
-    u'''Create a new image thumbnail, preserving the aspect ratio.
+    '''Create a new image thumbnail, preserving the aspect ratio.
 
     ARGUMENTS
       i:       The image to thumbnail.
@@ -46,7 +60,7 @@ def thumbnail_img(i, x, y, method=Image.ANTIALIAS):
 
 
 def thumbnail_img_noaspect(i, x, y, method=Image.ANTIALIAS):
-    u'''Create a new image thumbnail, ignoring the aspect ratio.
+    '''Create a new image thumbnail, ignoring the aspect ratio.
 
     ARGUMENTS
       i:       The image to thumbnail.
