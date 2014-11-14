@@ -8,24 +8,28 @@ Image support for GroupServer
 :Authors: `Michael JasonSmith`_,
          Richard Waid
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2013-03-26
+:Date: 2014-11-14
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
-  `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
-  by `OnlineGroups.Net`_.
+  `Creative Commons Attribution-Share Alike 4.0 International License`_
+  by `OnlineGroups.net`_.
+
+..  _Creative Commons Attribution-Share Alike 4.0 International License:
+    http://creativecommons.org/licenses/by-sa/4.0/
 
 Introduction
 ============
 
-GroupServer_ displays images in many places, including on profiles
-[#profiles]_, in posts [#posts]_, and on the Image page [#image]_. This egg
-wraps some functions provided by PIL_ to provide support to the other
-products for resizing and caching images. The functionality of this product
-is primarily provided by two classes:
+GroupServer_ displays images in many places, including on
+profiles [#profiles]_, in posts [#posts]_, and on the Image page
+[#image]_. This egg wraps some functions provided by PIL_ to
+provide support to the other products for resizing and caching
+images. The functionality of this product is primarily provided
+by two classes:
 
 * GSImage_ is used to resize and implicitly cache images. 
-* The GSSquareImage_ class resizes and crops the images to ensure they are
-  square, before implicitly caching the result.
+* The GSSquareImage_ class resizes and crops the images to ensure
+  they are square, before implicitly caching the result.
 
 The resizing is done by one of three utilities_.
 
@@ -33,9 +37,9 @@ The resizing is done by one of three utilities_.
 ===========
 
 The ``gs.image.GSImage`` class provides an application cache for
-images. This means the computationally-expensive task of creating a
-thumbnail only has to be done once. It also provides convenient methods_
-for integrating and resizing the image.
+images. This means the computationally-expensive task of creating
+a thumbnail only has to be done once. It also provides convenient
+methods_ for integrating and resizing the image.
 
 Constructor
 -----------
@@ -45,7 +49,8 @@ Constructor
  GSImage(data)
 
 ``data``:
-  Either a ``file`` or a byte-array (string) containing the image.
+  Either a ``file`` or a byte-array (string) containing the
+  image.
 
 Properties
 ----------
@@ -60,7 +65,8 @@ Properties
   The height of the image.
 
 ``contentType``:
-  The content type of the image (useful for setting the HTTP response).
+  The content type of the image (useful for setting the HTTP
+  response).
 
 Methods
 -------
@@ -72,25 +78,27 @@ Methods
   Returns a 2-tuple of ``(GSImage.width, GSImage.height)``.
 
 ``get_resized(x, y, maintain_aspect=True, only_smaller=True, return_cache_path=False)``:
-  Returns a new ``GSImage``, with a maximum width of ``x`` and a maximum
-  height of ``y``. 
+  Returns a new ``GSImage``, with a maximum width of ``x`` and a
+  maximum height of ``y``.
 
-  * If ``maintain_aspect`` is ``True`` then the aspect ratio of the new
-    image (``x/y``) will be the same as the aspect ratio of the old image.
+  * If ``maintain_aspect`` is ``True`` then the aspect ratio of
+    the new image (``x/y``) will be the same as the aspect ratio
+    of the old image.
   * If ``only_smaller`` is ``True`` then the image will be scaled
-    only if it is smaller. 
-  * Finally [#command]_, if ``return_cache`` is ``True`` then the path to
-    the file in the cache is returned, not the image (see `Side Effects`_
-    below).
+    only if it is smaller.
+  * Finally [#command]_, if ``return_cache`` is ``True`` then the
+    path to the file in the cache is returned, not the image (see
+    `Side Effects`_ below).
 
 Side Effects
 ------------
 
-The main job of the ``GSImage`` class is to *implicitly* cache the scaled
-image when ``get_resized`` is called. The cache is located at
-``{clientHome}/groupserver.data/groupserver.GSImage.cache``, where
-``clientHome`` is the directory of the GroupServer instance (normally
-``var/instance`` in the installation directory).
+The main job of the ``GSImage`` class is to *implicitly* cache
+the scaled image when ``get_resized`` is called. The cache is
+located at
+``{clientHome}/groupserver.data/groupserver.GSImage.cache``,
+where ``clientHome`` is the directory of the GroupServer instance
+(normally ``var/instance`` in the installation directory).
 
 The file-name is made up of ``{md5}{width}x{height}x{maintainAspect}``:
 
@@ -105,11 +113,12 @@ the quality_ may be set to a different value.
 Quality
 ~~~~~~~
 
-If the base image is a JPEG, then the quality of the image is set depending
-on the size of the *smallest* dimension. The idea is that the low quality
-is less noticeable at small sizes. For large sizes progressive-rendering is
-turned on, so the time-to-glass is reduced. The different quality settings
-at different sizes is as follows:
+If the base image is a JPEG, then the quality of the image is set
+depending on the size of the *smallest* dimension. The idea is
+that the low quality is less noticeable at small sizes. For large
+sizes progressive-rendering is turned on, so the time-to-glass is
+reduced. The different quality settings at different sizes is as
+follows:
 
 ================ =======
 Size             Quality
@@ -119,14 +128,14 @@ s <= 50px             40
 s > 200px             75  
 ================ =======
 
-If the base image is something other than a JPEG (such as a PNG) then it is
-simply resized.
+If the base image is something other than a JPEG (such as a PNG)
+then it is simply resized.
 
 Examples
 --------
 
-Resize the image in ``fileName``, ensuring neither dimension is more than
-128px::
+Resize the image in ``fileName``, ensuring neither dimension is
+more than 128px::
 
   f = file(fileName)
   i = GSImage(f)
@@ -157,10 +166,10 @@ Return a scaled image from a Zope page view by over-writing the
 ``GSSquareImage``
 =================
 
-The ``gs.image.GSSquareImage`` class resizes images, just like the parent
-GSImage_ class, but all images are made square. It inherits the same
-constructor_, and properties_ as its parent. However, the `get_resized`_
-method is different.
+The ``gs.image.GSSquareImage`` class resizes images, just like
+the parent GSImage_ class, but all images are made square. It
+inherits the same constructor_, and properties_ as its
+parent. However, the `get_resized`_ method is different.
 
 ``get_resized``
 ---------------
@@ -169,12 +178,14 @@ Get a resized square image.
 
 :Synopsis: ``get_resized(size)``
 
-:Description: The ``get_resized`` method resizes the image, so neither the
-              width nor the height will exceed the ``size``, and both will
-              be the same. See `thumbnail_img_square`_ for more details on
-              the algorithm used to do this.
+:Description: The ``get_resized`` method resizes the image, so
+              neither the width nor the height will exceed the
+              ``size``, and both will be the same. See
+              `thumbnail_img_square`_ for more details on the
+              algorithm used to do this.
 
-:Arguments: ``size`` the maximum width and height of the image in pixels.
+:Arguments: ``size`` the maximum width and height of the image in
+            pixels.
 
 :Returns: A new ``GSSquareImage``.
 
@@ -302,7 +313,7 @@ Thanks to Kevin for the original code:
 Resources
 =========
 
-- Code repository: https://source.iopen.net/groupserver/gs.image
+- Code repository: https://github.com/groupserver/gs.image
 - Questions and comments to http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 
@@ -310,15 +321,13 @@ Resources
 .. _GroupServer.org: http://groupserver.org/
 .. _OnlineGroups.Net: https://onlinegroups.net/
 .. _Michael JasonSmith: http://groupserver.org/p/mpj17/
-.. _Creative Commons Attribution-Share Alike 3.0 New Zealand License:
-   http://creativecommons.org/licenses/by-sa/3.0/nz/
 
 .. [#profiles] See ``gs.profile.image.base`` for the profile-image code:
-               <https://source.iopen.net/groupserver/gs.profile.image.base/>
+               <https://github.com/groupserver/gs.profile.image.base/>
 .. [#posts] See ``gs.group.messages.post`` for the post-rendering code:
-            <https://source.iopen.net/groupserver/gs.group.messages.post/>
+            <https://github.com/groupserver/gs.group.messages.post/>
 .. [#image] See ``gs.group.messages.image`` for the Image page:
-            <https://source.iopen.net/groupserver/gs.group.messages.image/>
+            <https://github.com/groupserver/gs.group.messages.image/>
 
 .. _PIL: http://www.pythonware.com/library/pil/handbook/
 
