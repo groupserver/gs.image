@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 import md5
 import os
@@ -109,7 +109,8 @@ class GSImage(object):
 
         """
         retval = None
-        cache_name = self.get_cache_name(x, y, maintain_aspect, only_smaller)
+        cache_name = self.get_cache_name(x, y, maintain_aspect,
+                                         only_smaller)
         if return_cache_path:
             # possibly None if no resizing was done
             retval = cache_name
@@ -154,17 +155,18 @@ class GSImage(object):
             elif m <= 200:
                 quality = 60  # Medium quality.
                 progressive = False
-            else:
-                quality = 75  # This is *high* according to the JPEG standard.
+            else:  # > 200
+                # This is *high* according to the JPEG standard.
+                quality = 75
                 progressive = True
             try:
                 img.save(cache_name, imgFormat, quality=quality,
                          progressive=progressive, optimize=True)
             except IOError:
-                # --=mj17=-- Increase the size of the "block" used by libjpeg
-                #    so we can scale stupidly large images, and retain
-                #    progressive rendering.
-                #    http://stackoverflow.com/questions/6788398/
+                # --=mj17=-- Increase the size of the "block" used by
+                # libjpeg so we can scale stupidly large images, and retain
+                # progressive rendering.
+                # http://stackoverflow.com/questions/6788398/
                 s = img.size[0] * img.size[1]
                 ImageFile.MAXBLOCK = s
                 img.save(cache_name, imgFormat, quality=quality,
