@@ -12,7 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 from PIL import Image
 
 
@@ -30,28 +30,25 @@ def rgba(image):
 def thumbnail_img(i, x, y, method=Image.ANTIALIAS):
     '''Create a new image thumbnail, preserving the aspect ratio.
 
-    ARGUMENTS
-      i:       The image to thumbnail.
-      x:       The maximum width.
-      y:       The maximum height.
-      method:  The scaling method to use (default ``PIL.Image.ANTIALIAS``.)
+:param PIL.Image i: The image to thumbnail
+:param int x: The maximum width
+:param int y: The maximum height
+:param method:  The scaling method to use
+:returns: A new scaled image
+:rtype: :class:`PIL.Image`
 
-    RETURNS
-      A new scaled image.'''
-    #
-    # With thanks to kevin@cazabon.com:
-    # http://mail.python.org/pipermail/image-sig/2006-January/003724.html
-    #
+With thanks to kevin@cazabon.com:
+<http://mail.python.org/pipermail/image-sig/2006-January/003724.html>'''
     image = rgba(i)
 
-    imAspect = float(image.size[0]) / float(image.size[1])
-    outAspect = float(x) / float(y)
+    imAspect = image.size[0] / image.size[1]
+    outAspect = x / y
     if imAspect >= outAspect:
         #set to maxWidth x maxWidth/imAspect
-        img = image.resize((x, int((float(x) / imAspect) + 0.5)), method)
+        img = image.resize((x, int((x / imAspect) + 0.5)), method)
     else:
         #set to maxHeight*imAspect x maxHeight
-        img = image.resize((int((float(y) * imAspect) + 0.5), y), method)
+        img = image.resize((int((y * imAspect) + 0.5), y), method)
 
     if img.mode != i.mode:
         # Change the image back to the original mode before saving
@@ -62,14 +59,12 @@ def thumbnail_img(i, x, y, method=Image.ANTIALIAS):
 def thumbnail_img_noaspect(i, x, y, method=Image.ANTIALIAS):
     '''Create a new image thumbnail, ignoring the aspect ratio.
 
-    ARGUMENTS
-      i:       The image to thumbnail.
-      x:       The maximum width.
-      y:       The maximum height.
-      method:  The scaling method to use (default ``PIL.Image.ANTIALIAS``.)
-
-    RETURNS
-      A new scaled image.'''
+:param PIL.Image i: The image to thumbnail
+:param int x: The maximum width
+:param int y: The maximum height
+:param method:  The scaling method to use
+:returns: A new scaled image
+:rtype: :class:`PIL.Image`'''
     image = rgba(i)
     img = image.resize((x, y), method)
         # Change the image back to the original mode before saving
@@ -79,10 +74,18 @@ def thumbnail_img_noaspect(i, x, y, method=Image.ANTIALIAS):
 
 
 def thumbnail_img_square(i, size, method=Image.ANTIALIAS):
+    '''Create a square version of the thumbnail image
+
+:param PIL.Image i: The image to thumbnail
+:param int size: The maximum size
+:param method:  The scaling method to use
+:returns: A new scaled image
+:rtype: :class:`PIL.Image`
+
+A square-image is created by scaling the short axis to the new size, leaving the long axis
+unconstrained, and then cropping the image.'''
     origWidth, origHeight = i.size
 
-    # Scale the short axis to the new size, leaving the long axis
-    # unconstrained.
     if origHeight <= origWidth:
         scaledImage = thumbnail_img(i, origWidth, size)
     else:
