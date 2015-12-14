@@ -13,6 +13,8 @@
 #
 ##############################################################################
 from __future__ import absolute_import
+from logging import getLogger
+log = getLogger('gs.image')
 from os.path import isfile
 from .image import GSImage
 from .utils import thumbnail_img_square
@@ -43,11 +45,19 @@ class GSSquareImage(GSImage):
         if isfile(cache_name):
             retval = cache_name
         else:
-            img = self._get_resized_img(size)
-            # TODO Ticket 663
-            # <https://projects.iopen.net/groupserver/ticket/663>
-            img.save(cache_name, self.pilImage().format)
-            retval = cache_name
+            try:
+                img = self._get_resized_img(size)
+            except IOError as e:
+                m = 'Failed to get the resized image for "{0}"'
+                msg = m.format(self.base_path)
+                log.error(msg)
+                log.error(e)
+                retval = None
+            else:
+                # TODO Ticket 663
+                # <https://projects.iopen.net/groupserver/ticket/663>
+                self.save_img_to_cache(img, cache_name)
+                retval = cache_name
         return retval
 
     def _get_resized_img(self, size):
