@@ -108,6 +108,19 @@ class GSImageJPEGTest(GSImageTest):
         self.assertEqual(0, mock_gri.call_count)
         self.assertTrue(os.path.isfile(fileName))
 
+    @patch('gs.image.image.locateDataDirectory')
+    def test_resize_exception(self, mock_ldd):
+        'Test throwing an exception when GSImage._get_resized_image is called'
+        mock_ldd.return_value = self.dataDir
+        width = 640
+        height = 480
+
+        with patch.object(self.image, '_get_resized_img') as mock_gri:
+            mock_gri.side_effect = IOError('Ethyl the frog')
+            r = self.image.get_cache_name(width, height)
+
+        self.assertIs(None, r)
+
 
 class GSImagePNGTest(GSImageTest):
 

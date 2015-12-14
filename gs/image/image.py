@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,10 +12,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ############################################################################
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 import md5
+from logging import getLogger
+log = getLogger('gs.image')
 import os
-from StringIO import StringIO
+from io import BytesIO
 from zope.app.file.image import getImageInfo
 from PIL import Image as PILImage, ImageFile
 from Products.XWFCore.XWFUtils import locateDataDirectory
@@ -32,7 +34,7 @@ class GSImage(object):
         self.fromCache = False
 
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")
-        self.md5sum = md5.new(StringIO(self.data).read()).hexdigest()
+        self.md5sum = md5.new(BytesIO(self.data).read()).hexdigest()
         self.base_path = os.path.join(self.data_dir, self.md5sum)
 
     @property
@@ -99,7 +101,7 @@ class GSImage(object):
 
     def pilImage(self):
         if self._pilImage is None:
-            data_reader = StringIO(self._data)
+            data_reader = BytesIO(self._data)
             self._pilImage = PILImage.open(data_reader)
         return self._pilImage
 
@@ -131,9 +133,17 @@ class GSImage(object):
         elif os.path.isfile(cache_name):
             retval = cache_name
         else:
-            img = self._get_resized_img(x, y, maintain_aspect)
-            self.save_img_to_cache(img, cache_name)
-            retval = cache_name
+            try:
+                img = self._get_resized_img(x, y, maintain_aspect)
+            except IOError as e:
+                m = 'Failed to get the resized image for "{0}"'
+                msg = m.format(self.base_path)
+                log.error(msg)
+                log.error(e)
+                retval = None
+            else:
+                self.save_img_to_cache(img, cache_name)
+                retval = cache_name
         return retval
 
     def _get_resized_img(self, x, y, maintain_aspect):
