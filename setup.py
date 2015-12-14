@@ -27,7 +27,7 @@ with codecs.open(os.path.join("docs", "HISTORY.rst"),
     long_description += '\n' + f.read()
 
 setup(
-    name='name',
+    name=name,
     version=version,
     description="Image manipulation and display on GroupServer",
     long_description=long_description,
