@@ -13,6 +13,7 @@
 #
 ##############################################################################
 from __future__ import absolute_import, unicode_literals, print_function, division
+import logging
 from mock import patch
 import os
 from pkg_resources import resource_filename
@@ -115,11 +116,14 @@ class GSImageJPEGTest(GSImageTest):
         width = 640
         height = 480
 
+        logging.getLogger('gs.image').addHandler(logging.NullHandler())
         with patch.object(self.image, '_get_resized_img') as mock_gri:
             mock_gri.side_effect = IOError('Ethyl the frog')
             r = self.image.get_cache_name(width, height)
+            i = self.image.get_resized(width, height)
 
         self.assertIs(None, r)
+        self.assertIs(self.image, i)
 
 
 class GSImagePNGTest(GSImageTest):
