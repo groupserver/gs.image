@@ -41,7 +41,7 @@ Changelog
 
 * Switching from ``PIL`` to `Pillow`_ as the main dependency
 
-.. _Pillow: https://pillow.readthedocs.org/
+.. _Pillow: https://pillow.readthedocs.io/
 
 2.0.0 (2011-02-15)
 ------------------
