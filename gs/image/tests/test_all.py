@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2015 OnlineGroups.net and Contributors.
+# Copyright © 2015, 2016 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,10 +14,10 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
-from gs.image.tests.image import GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest
+from gs.image.tests.image import (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, )
 from gs.image.tests.utils import (
     RGBATest, ThumbnailTest, ThumbnailNoAspectTest, ThumbnailImageSquare)
-testCases = (GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, RGBATest, ThumbnailTest,
+testCases = (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, RGBATest, ThumbnailTest,
              ThumbnailNoAspectTest, ThumbnailImageSquare)
 
 

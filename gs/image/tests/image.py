@@ -13,6 +13,7 @@
 #
 ##############################################################################
 from __future__ import absolute_import, unicode_literals, print_function, division
+import base64
 import logging
 from mock import patch
 import os
@@ -23,15 +24,20 @@ from unittest import TestCase
 from gs.image.image import GSImage
 
 
-class GSImageTest(TestCase):
+class GSITest(TestCase):
     '''An abstract base-class for the image tests. Needs ``self.dataDir`` defined.'''
 
-    def load_image(self, filename):
+    @staticmethod
+    def filename_in_tests(filename):
         testname = os.path.join('tests', filename)
-        fullname = resource_filename('gs.image', testname)
+        retval = resource_filename('gs.image', testname)
+        return retval
+
+    def load_image(self, filename):
+        fullname = self.filename_in_tests(filename)
         with patch('gs.image.image.locateDataDirectory') as mock_ldd:
             mock_ldd.return_value = self.dataDir
-            retval = GSImage(file(fullname, 'rb'))
+            retval = GSImage(open(fullname, 'rb'))
         return retval
 
     def get_resized(self, width, height, maintain_aspect=True, only_smaller=True):
@@ -41,7 +47,71 @@ class GSImageTest(TestCase):
         return retval
 
 
-class GSImageJPEGTest(GSImageTest):
+class GSImageTest(GSITest):
+    '''Basic test for the :class:`GSImage` class'''
+
+    #: A tiny 1px transparent PNG from <http://garethrees.org/2007/11/14/pngcrush/>
+    TINY_PNG = base64.decodestring(b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAA'
+                                   b'QAABQABDQottAAA\nAABJRU5ErkJggg==\n')
+
+    def setUp(self):
+        self.dataDir = mkdtemp()
+
+    @patch('gs.image.image.locateDataDirectory')
+    def test_init(self, m_ldd):
+        m_ldd.return_value = '/tmp/'
+        r = GSImage(self.TINY_PNG)
+
+        self.assertEqual(1, m_ldd.call_count)
+        self.assertEqual('93ca32a536da1698ea979f183679af29', r.md5sum)
+
+    @patch('gs.image.image.locateDataDirectory')
+    def test_setData(self, m_ldd):
+        '''Ensure we get the data back'''
+        m_ldd.return_value = '/tmp/'
+        i = GSImage(b'')  # --=mpj17=-- To ensure that the __init__ does not cause issues
+        i.data = self.TINY_PNG
+        r = i.data
+
+        self.assertEqual(self.TINY_PNG, r)
+        self.assertEqual(67, i._size)
+        self.assertEqual('image/png', i._contentType)
+        self.assertEqual(1, i._width)
+        self.assertEqual(1, i._height)
+
+    @patch('gs.image.image.locateDataDirectory')
+    def test_data_set_none(self, m_ldd):
+        'Ensure it is impossible to set the data to None'
+        m_ldd.return_value = '/tmp/'
+        with self.assertRaises(TypeError):
+            GSImage(None)
+
+    @patch('gs.image.image.locateDataDirectory')
+    def test_data_set_file(self, m_ldd):
+        'Ensure we can set the image-data to a file'
+        m_ldd.return_value = '/tmp/'
+        i = GSImage(b'')
+        filename = self.filename_in_tests('tiny.png')
+        with open(filename, 'rb') as f:
+            i.data = f
+        r = i.data
+
+        self.assertEqual(self.TINY_PNG, r)
+
+    def test_width(self):
+        i = self.load_image('warty-final-ubuntu.png')
+        r = i.width
+
+        self.assertEqual(1600, r)
+
+    def test_height(self):
+        i = self.load_image('warty-final-ubuntu.png')
+        r = i.height
+
+        self.assertEqual(1200, r)
+
+
+class GSImageJPEGTest(GSITest):
 
     def setUp(self):
         self.dataDir = mkdtemp()
@@ -126,7 +196,7 @@ class GSImageJPEGTest(GSImageTest):
         self.assertIs(self.image, i)
 
 
-class GSImagePNGTest(GSImageTest):
+class GSImagePNGTest(GSITest):
 
     def setUp(self):
         self.dataDir = mkdtemp()
@@ -152,7 +222,7 @@ class GSImagePNGTest(GSImageTest):
         self.assertEqual(self.image.contentType, r.contentType)
 
 
-class GSImageGIFTest(GSImageTest):
+class GSImageGIFTest(GSITest):
     def setUp(self):
         self.dataDir = mkdtemp()
         self.image = self.load_image('grypaws.gif')

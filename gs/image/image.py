@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015, 2016 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,10 +14,10 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals, print_function
 import md5
+from io import BytesIO
 from logging import getLogger
 log = getLogger('gs.image')
 import os
-from io import BytesIO
 from zope.app.file.image import getImageInfo
 from PIL import Image as PILImage, ImageFile
 from Products.XWFCore.XWFUtils import locateDataDirectory
@@ -27,10 +27,7 @@ from .utils import thumbnail_img, thumbnail_img_noaspect
 class GSImage(object):
 
     def __init__(self, data):
-        if type(data) == file:
-            self.data = data.read()
-        else:
-            self.data = data
+        self.data = data
         self.fromCache = False
 
         self.data_dir = locateDataDirectory("groupserver.GSImage.cache")
@@ -39,15 +36,13 @@ class GSImage(object):
 
     @property
     def contentType(self):
-        assert isinstance(self._contentType, str)
         return self._contentType
 
     def _getData(self):
-        assert isinstance(self._data, str)
         return self._data
 
     def _setData(self, data):
-        '''Set  the image data.
+        '''Set the image data.
 
         Nicked from the Zope 3 Image and File classes.
 
@@ -63,18 +58,20 @@ class GSImage(object):
           Sets "self._contentType" to the content type of the image.
           Sets "self._width" to the width of the image.
           Sets "self._height" to the height of the image.'''
+        if type(data) == str:
+            _d = data
+        elif type(data) == file:
+            _d = data.read()
+        else:
+            m =  'Data is a {0} not a string or file'.format(type(data))
+            raise TypeError(m)
+        assert isinstance(_d, str)
 
-        assert isinstance(data, str),\
-            'Data is a {0} not a string'.format(type(data))
-        self._data = data
-        self._size = len(data)
-        self._contentType, self._width, self._height = getImageInfo(data)
+        self._data = _d
+        self._size = len(_d)
+        self._contentType, self._width, self._height = getImageInfo(_d)
         self._pilImage = None
 
-        # assert self._data == data  # --=mpj17=-- performance issue
-        assert isinstance(self._data, str)
-        assert isinstance(self._size, int)
-        assert isinstance(self._contentType, str)
         assert isinstance(self._width, int)
         assert isinstance(self._height, int)
 
