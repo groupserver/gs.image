@@ -1,6 +1,12 @@
 Changelog
 =========
 
+3.1.0 (2016-04-11)
+------------------
+
+* Making :class:`gs.image.GSImage.data` accept either strings or files
+* Adding more unit tests
+
 3.0.4 (2015-12-14)
 ------------------
 
