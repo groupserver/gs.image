@@ -14,11 +14,12 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
-from gs.image.tests.image import (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, )
+from gs.image.tests.image import (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest,
+                                  GSImageWideTest)
 from gs.image.tests.utils import (
     RGBATest, ThumbnailTest, ThumbnailNoAspectTest, ThumbnailImageSquare)
-testCases = (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, RGBATest, ThumbnailTest,
-             ThumbnailNoAspectTest, ThumbnailImageSquare)
+testCases = (GSImageTest, GSImageJPEGTest, GSImagePNGTest, GSImageGIFTest, GSImageWideTest,
+             RGBATest, ThumbnailTest, ThumbnailNoAspectTest, ThumbnailImageSquare)
 
 
 def load_tests(loader, tests, pattern):
