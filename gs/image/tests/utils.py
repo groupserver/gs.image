@@ -85,6 +85,15 @@ class ThumbnailTest(TestCase, UtilTest):
         self.assertEqual(width, r.size[0])
         self.assertEqual(1, r.size[1])
 
+    def test_scale_high(self):
+        'Test that making a high-and-narrow image smaller works'
+        width = height = 190
+        i = self.load_image('high.png')
+        r = thumbnail_img(i, width, height)
+
+        self.assertEqual(1, r.size[0])
+        self.assertEqual(height, r.size[1])
+
 
 class ThumbnailNoAspectTest(TestCase, UtilTest):
     def test_scale(self):
