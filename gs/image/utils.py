@@ -51,7 +51,9 @@ With thanks to kevin@cazabon.com:
         img = image.resize((x, height), method)
     else:
         #set to maxHeight*imAspect x maxHeight
-        img = image.resize((int((y * imAspect) + 0.5), y), method)
+        width = int((y * imAspect) + 0.5)
+        width = width if (width > 0) else 1
+        img = image.resize((width, y), method)
 
     if img.mode != i.mode:
         # Change the image back to the original mode before saving
