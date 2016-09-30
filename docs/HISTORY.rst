@@ -1,6 +1,16 @@
 Changelog
 =========
 
+3.1.1 (2016-09-30)
+------------------
+
+* Ensuring scaled images are always at least 1 pixel wide and 1
+  pixel high, with thanks to Donald Winship for reporting `the
+  issue with scaling`_
+
+.. _the issue with scaling:
+   http://groupserver.org/r/topic/1aK6lIYi2YaN6WLmAHM3nL
+
 3.1.0 (2016-04-11)
 ------------------
 
