@@ -255,20 +255,3 @@ class GSImageGIFTest(GSITest):
 
         self.assertEqual(width, r.width)
         self.assertEqual(height, r.height)
-
-
-class GSImageWideTest(GSITest):
-    def setUp(self):
-        self.dataDir = mkdtemp()
-        self.image = self.load_image('wide.png')
-
-    def tearDown(self):
-        rmtree(self.dataDir)
-
-    def test_resize(self):
-        'Test that making a wide-and-short image smaller works'
-        width = height = 190
-        r = self.get_resized(width, height)
-
-        self.assertEqual(width, r.width)
-        self.assertEqual(1, r.height)
