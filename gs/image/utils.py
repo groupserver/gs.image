@@ -46,7 +46,9 @@ With thanks to kevin@cazabon.com:
     outAspect = x / y
     if imAspect >= outAspect:
         #set to maxWidth x maxWidth/imAspect
-        img = image.resize((x, int((x / imAspect) + 0.5)), method)
+        height = int((x / imAspect) + 0.5)
+        height = height if (height > 0) else 1
+        img = image.resize((x, height), method)
     else:
         #set to maxHeight*imAspect x maxHeight
         img = image.resize((int((y * imAspect) + 0.5), y), method)
