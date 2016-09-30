@@ -25,7 +25,7 @@ class UtilTest(object):
 
     @staticmethod
     def load_image(filename):
-        testname = os.path.join('tests', filename)
+        testname = os.path.join('tests', 'images', filename)
         fullname = resource_filename('gs.image', testname)
         retval = Image.open(file(fullname, 'rb'))
         return retval

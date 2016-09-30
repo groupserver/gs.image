@@ -29,7 +29,7 @@ class GSITest(TestCase):
 
     @staticmethod
     def filename_in_tests(filename):
-        testname = os.path.join('tests', filename)
+        testname = os.path.join('tests', 'images', filename)
         retval = resource_filename('gs.image', testname)
         return retval
 
